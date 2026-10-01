@@ -1,0 +1,371 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "status_report.schema.json",
+  "title": "SNT workspace status report, schema_version 1",
+  "description": "The report written by the snt_workspace_check pipeline to <workspace root>/snt_status/status_<UTC timestamp>.json and, byte-identical, to status_latest.json. FROZEN at phase 4 (PRODUCT_SPEC.md section 6, decision D18). Compatibility rules: adding a key, a status/position/resolved_from/source value, or a blind_spots line is NOT a breaking change and keeps schema_version 1; renaming or removing a key or value, changing a type, or changing what a value means is breaking and requires schema_version 2. This schema is deliberately strict (additionalProperties: false, closed enums) so the producer cannot drift silently; a CONSUMER must instead ignore unknown keys and tolerate unknown enum values. Every key is always present; a value that does not apply is null, never omitted. Strings marked x-display-only are text for a human and must never be parsed or compared.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "snt_workspace_check_version",
+    "workspace",
+    "repo",
+    "mode",
+    "target_release",
+    "declared_release",
+    "releases_considered",
+    "incomplete",
+    "summary",
+    "pipelines",
+    "entries",
+    "inert_filesystem_copies",
+    "scan_exclusions",
+    "errors",
+    "blind_spots"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "description": "Bumped only for a breaking change to this schema."
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC, second precision, ending in Z (e.g. 2026-09-29T13-39-32Z in the filename, 2026-09-29T13:39:32Z here)."
+    },
+    "snt_workspace_check_version": {
+      "type": ["string", "null"],
+      "description": "The version of the snt_workspace_check pipeline that generated this report. A run cannot currently read the name of the pipeline version executing it, so this is null until a source for it is found; the key is frozen regardless."
+    },
+    "workspace": {
+      "type": "string",
+      "description": "Slug of the OpenHEXA workspace the check ran in."
+    },
+    "repo": {
+      "type": "string",
+      "description": "owner/repo whose releases the workspace was checked against."
+    },
+    "mode": {
+      "enum": ["verification", "attribution"],
+      "description": "verification: a target release was resolved and every file has a verdict relative to it. attribution: no target; files are attributed to the releases whose bytes they hold."
+    },
+    "target_release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "resolved_from", "published_at"],
+      "description": "Always an object, in both modes. In attribution mode tag and published_at are null and resolved_from says why.",
+      "properties": {
+        "tag": { "type": ["string", "null"] },
+        "resolved_from": {
+          "enum": ["parameter", "marker", "nothing_given"],
+          "description": "parameter: the release_tag parameter (in attribution mode: the reserved value 'none'). marker: the tag in .snt_release. nothing_given: no parameter and no marker."
+        },
+        "published_at": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "declared_release": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tag", "source"],
+          "properties": {
+            "tag": { "type": "string" },
+            "source": { "const": ".snt_release" }
+          }
+        }
+      ],
+      "description": "What the .snt_release marker says was last deployed: intent, not verified fact. null when the marker is absent."
+    },
+    "releases_considered": {
+      "type": "array",
+      "description": "Every published release of the repository, in published_at order (oldest first).",
+      "items": { "$ref": "#/$defs/release_ref" }
+    },
+    "incomplete": {
+      "type": "boolean",
+      "description": "true when at least one release manifest, source or file could not be read. The report is then a partial account, not a pass."
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by_status", "attribution"],
+      "properties": {
+        "by_status": {
+          "type": "object",
+          "description": "Entry count per status. A status with no entries is omitted from this map.",
+          "propertyNames": { "$ref": "#/$defs/status" },
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "attribution": { "$ref": "#/$defs/attribution_summary" }
+      }
+    },
+    "pipelines": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/pipeline_block" }
+    },
+    "entries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/entry" }
+    },
+    "inert_filesystem_copies": {
+      "type": "array",
+      "description": "Repository-relative paths of files on the filesystem inside a pipeline directory. They never execute and are not classified.",
+      "items": { "type": "string" }
+    },
+    "scan_exclusions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["top_level_directories", "directories_at_any_depth", "subpaths", "root_files"],
+      "description": "What the filesystem walk skipped. The keys are frozen; the strings in directories_at_any_depth may include a prose rule and are x-display-only.",
+      "properties": {
+        "top_level_directories": { "type": "array", "items": { "type": "string" } },
+        "directories_at_any_depth": { "type": "array", "items": { "type": "string" } },
+        "subpaths": { "type": "array", "items": { "type": "string" } },
+        "root_files": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scope", "message"],
+        "properties": {
+          "scope": {
+            "type": "string",
+            "description": "Where the error arose: 'manifest:<tag>', 'pipeline_version:<code>' or 'pipeline_list'. New scope prefixes may be added."
+          },
+          "message": { "type": "string", "x-display-only": true }
+        }
+      }
+    },
+    "blind_spots": {
+      "type": "array",
+      "description": "What this report never looked at, so it cannot read as a clean bill of health.",
+      "items": { "type": "string", "x-display-only": true }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": [
+        "match",
+        "mismatch_known",
+        "attributed",
+        "unknown_content",
+        "missing",
+        "removed_in_target",
+        "added_after_target",
+        "untracked",
+        "not_covered",
+        "unreadable"
+      ],
+      "description": "Stable enum. match, mismatch_known, missing, removed_in_target and added_after_target occur only in verification mode; attributed only in attribution mode; the rest in both."
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "release_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "published_at", "manifest_available"],
+      "properties": {
+        "tag": { "type": "string" },
+        "published_at": { "type": ["string", "null"], "format": "date-time" },
+        "manifest_available": {
+          "type": "boolean",
+          "description": "false when the release has no usable release_manifest.json. Such a release cannot be compared against and breaks attribution spans."
+        }
+      }
+    },
+    "span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "count"],
+      "description": "A run of consecutive releases (published_at order, over every release including those with no manifest) that all hold the same bytes. A single release is a span of one (from == to, count 1).",
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "source",
+        "pipeline",
+        "status",
+        "observed_sha256",
+        "target_sha256",
+        "matching_releases",
+        "position",
+        "remediation"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Repository-relative posix path."
+        },
+        "source": {
+          "enum": ["filesystem", "pipeline_version"],
+          "description": "Where the bytes were read from. Each tracked path is read from exactly one source."
+        },
+        "pipeline": {
+          "type": ["string", "null"],
+          "description": "Pipeline directory name for source pipeline_version; null for filesystem."
+        },
+        "status": { "$ref": "#/$defs/status" },
+        "observed_sha256": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/sha256" }],
+          "description": "Hash of the bytes found. null when the file is absent, or unreadable, or untracked on the filesystem (untracked files are never read)."
+        },
+        "target_sha256": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/sha256" }],
+          "description": "Hash of the file in the target release. null in attribution mode, or when the target does not ship the path."
+        },
+        "matching_releases": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "array", "items": { "$ref": "#/$defs/span" } }
+          ],
+          "description": "Spans over the releases whose manifest holds exactly the observed bytes at this path. Verification mode: the target is excluded, and the field is null on match entries. Attribution mode: every matching release. Two spans for one file means its content was changed and later reverted."
+        },
+        "position": {
+          "enum": ["older", "newer", "both", "unordered", null],
+          "description": "Where matching_releases sit relative to the target by published_at. older: behind. newer: ahead. both: changed in the target and later reverted. unordered: a matching release has no usable timestamp or the same one as the target. null when there are no matching releases, and always in attribution mode."
+        },
+        "remediation": {
+          "type": ["string", "null"],
+          "x-display-only": true,
+          "description": "Text for a human. Wording depends on source as well as status. Never parse or compare it."
+        }
+      }
+    },
+    "pipeline_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pipeline",
+        "code",
+        "in_target",
+        "in_any_release",
+        "current_version_name",
+        "current_version_claims_tag",
+        "version_name_matches_content",
+        "remediation"
+      ],
+      "properties": {
+        "pipeline": {
+          "type": ["string", "null"],
+          "description": "Repository directory name; null for a deployed pipeline no release describes."
+        },
+        "code": {
+          "type": "string",
+          "description": "The OpenHEXA pipeline code (kebab-case)."
+        },
+        "in_target": {
+          "type": ["boolean", "null"],
+          "description": "Whether the target release ships this pipeline. false on a deployed pipeline means it is not part of the target and is left in place. null in attribution mode."
+        },
+        "in_any_release": { "type": "boolean" },
+        "current_version_name": {
+          "type": ["string", "null"],
+          "description": "The raw versionName from the API, e.g. 'v0.1.0-test [v1]' (OpenHEXA appends the version number). null when the pipeline is not deployed or could not be read."
+        },
+        "current_version_claims_tag": {
+          "type": ["string", "null"],
+          "description": "The release tag parsed out of current_version_name."
+        },
+        "version_name_matches_content": {
+          "type": ["boolean", "null"],
+          "description": "true when the zip holds exactly the files, byte for byte, that the named release ships for this pipeline. false otherwise, including an extra file or a name pointing at a release that does not ship the pipeline. null when the name is not a release tag with a usable manifest."
+        },
+        "remediation": { "type": ["string", "null"], "x-display-only": true }
+      }
+    },
+    "count_share": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "share"],
+      "properties": {
+        "count": { "type": "integer", "minimum": 0 },
+        "share": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "release_score": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tag",
+        "published_at",
+        "manifest_available",
+        "shipped",
+        "present",
+        "agreeing",
+        "extra",
+        "agreement",
+        "completeness"
+      ],
+      "description": "One release, judged only on the paths it ships (decision D15). Every count and ratio is null when manifest_available is false. A ratio is also null when its denominator is 0.",
+      "properties": {
+        "tag": { "type": "string" },
+        "published_at": { "type": ["string", "null"], "format": "date-time" },
+        "manifest_available": { "type": "boolean" },
+        "shipped": { "type": ["integer", "null"], "minimum": 0, "description": "Files the release ships." },
+        "present": { "type": ["integer", "null"], "minimum": 0, "description": "Of those, how many are found in the workspace." },
+        "agreeing": { "type": ["integer", "null"], "minimum": 0, "description": "Of those present, how many have exactly the release's bytes." },
+        "extra": { "type": ["integer", "null"], "minimum": 0, "description": "Files found in the workspace at paths the release does not ship. They count neither for nor against it." },
+        "agreement": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "agreeing / present." },
+        "completeness": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "present / shipped." }
+      }
+    },
+    "attribution_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files_scored", "rule", "by_release", "best_fit", "matches_no_release", "unreadable"],
+      "description": "Present in both modes; the scores come from the observed bytes, not from each entry's status. A file unchanged across releases agrees with each of them, so no column adds up to 1.",
+      "properties": {
+        "files_scored": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The denominator: every entry for a file present in the workspace, both sources together, except untracked and missing."
+        },
+        "rule": { "type": "string", "x-display-only": true, "description": "A statement of how every number was computed." },
+        "by_release": {
+          "type": "array",
+          "description": "One row per release in releases_considered, oldest first.",
+          "items": { "$ref": "#/$defs/release_score" }
+        },
+        "best_fit": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["tag", "agreement", "completeness"],
+              "properties": {
+                "tag": { "type": "string" },
+                "agreement": { "type": ["number", "null"] },
+                "completeness": { "type": ["number", "null"] }
+              }
+            }
+          ],
+          "description": "Highest agreement, then highest completeness, then newest. null when no release agrees with any file."
+        },
+        "matches_no_release": {
+          "$ref": "#/$defs/count_share",
+          "description": "Files whose bytes match no release."
+        },
+        "unreadable": {
+          "$ref": "#/$defs/count_share",
+          "description": "Files that could not be read. Present but never agreeing."
+        }
+      }
+    }
+  }
+}

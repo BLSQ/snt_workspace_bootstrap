@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "release_manifest.schema.json",
+  "title": "SNT release manifest",
+  "description": "release_manifest.json, attached as an asset to a GitHub release: every file the release ships, with its sha256, and which of those files ship inside which OpenHEXA pipeline version zip. Produced by the 'Generate Release Manifest' workflow (.github/workflows/generate_manifest.yaml) of the source repository; consumed by snt_workspace_manager (split_manifest, download_manifest) and snt_workspace_check (load_manifests, build_index). Derived from that code, not from prose (PRODUCT_SPEC.md section 2.1, decision D26). Repository-agnostic: it fixes the shape, not which paths a given repository ships - for snt_development those are its R notebooks and helpers plus every top-level directory holding a pipeline.py. The manifest carries no schema_version key; adding one is a change to the producer. Compatibility rules, as for status_report.schema.json: adding a key is NOT a breaking change; renaming or removing a key, changing a type, or changing what a value means is breaking. This schema is deliberately strict (additionalProperties: false) so a producer cannot drift silently; a CONSUMER must instead ignore unknown keys. Two invariants hold but cannot be expressed in JSON Schema, so a validator must check them separately: (1) for every pipeline directory D and every entry M of its zip_files, the path 'D/M' is a key of files; (2) every zip_files list contains 'pipeline.py'. Pre-phase-0 manifests (development-only releases before 2026-09-21: version and files only, no pipelines block) do NOT validate and are not supported (D26): snt_workspace_check refuses them, and snt_workspace_manager's fallback for them is to be deleted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "files", "pipelines"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The release tag this manifest describes (the workflow's GITHUB_REF_NAME), e.g. v0.2.1-test. On a manual workflow_dispatch run it is the branch name instead, or 'unknown' if unset. No consumer reads it today: both pipelines identify a release by its GitHub tag_name, never by this field."
+    },
+    "files": {
+      "type": "object",
+      "description": "Every tracked file, flat across both delivery routes: {repository path: sha256}. A path is a filesystem file (synced into the workspace by snt_workspace_manager) unless its first segment is a key of pipelines, in which case it ships only inside that pipeline's version zip.",
+      "propertyNames": { "$ref": "#/$defs/relative_path" },
+      "additionalProperties": { "$ref": "#/$defs/sha256" },
+      "minProperties": 1
+    },
+    "pipelines": {
+      "type": "object",
+      "description": "{repository directory: pipeline spec}, one entry per deployable OpenHEXA pipeline. The key is a single top-level directory, not a nested path: snt_workspace_manager excludes a file from the filesystem sync by its first path segment alone. May be empty for a release that ships no pipeline, but must be present.",
+      "propertyNames": { "$ref": "#/$defs/directory_name" },
+      "additionalProperties": { "$ref": "#/$defs/pipeline" }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hex sha256 of the file's bytes, as hashlib.hexdigest() writes it."
+    },
+    "relative_path": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*(^|/)\\.\\.?(/|$))(?!.*//)[^\\\\]+$",
+      "description": "A POSIX path relative to the repository root (or, in zip_files, to the pipeline directory): no leading slash, no '.' or '..' segment, no empty segment, no backslash."
+    },
+    "directory_name": {
+      "type": "string",
+      "pattern": "^(?!\\.\\.?$)[^/\\\\]+$",
+      "description": "One path segment: a top-level directory of the repository."
+    },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "zip_files"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "The OpenHEXA pipeline code: the directory name with underscores replaced by hyphens (snt_map_extracts -> snt-map-extracts). The only place a consumer can get it from."
+        },
+        "zip_files": {
+          "type": "array",
+          "description": "Paths as they appear inside the pipeline's version zip, i.e. relative to the pipeline directory, so they compare directly against the zip's namelist(). Prefix one with the directory key and '/' to get the key into files, and so the expected hash.",
+          "items": { "$ref": "#/$defs/relative_path" },
+          "uniqueItems": true,
+          "minItems": 1
+        }
+      }
+    }
+  }
+}

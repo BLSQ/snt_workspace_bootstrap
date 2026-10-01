@@ -1,0 +1,28 @@
+# Local Python development environment for snt_workspace_bootstrap.
+#
+# These are DESK TOOLS ONLY — none of them runs on OpenHEXA. What runs in a
+# workspace is declared per pipeline, in <pipeline_name>/requirements.txt.
+# Nothing here affects a pipeline run, so versions may drift harmlessly.
+#
+#   conda env create -f dev/environment.yml
+#   conda activate snt_workspace_bootstrap
+#
+# Update after an edit:  conda env update -f dev/environment.yml --prune
+name: snt_workspace_bootstrap
+
+channels:
+  - conda-forge
+
+dependencies:
+  # Lower bound matches requires-python in ../pyproject.toml; upper bound keeps
+  # you off versions the workspace image (Python 3.13) has never seen.
+  - python>=3.11,<3.14
+  # Floor, not pin. ../pyproject.toml sets `preview = true`, which enables lint rules that
+  # are still being added, so two colleagues on different ruff versions can get different
+  # results from identical code. Raise this floor when the team agrees to a newer ruff.
+  - ruff>=0.16          # the repo's only automated code check; rules live in ../pyproject.toml
+  - pip
+  - pip:
+      # Not on conda-forge. For editor autocomplete on the @pipeline / @parameter
+      # decorators, and for `openhexa pipelines push`.
+      - openhexa.sdk

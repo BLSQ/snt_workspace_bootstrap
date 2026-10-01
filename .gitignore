@@ -1,0 +1,19 @@
+.vscode/
+venv/
+__pycache__/
+
+# Local working notes, sandbox reports and fixtures — never committed.
+ignore/
+
+# Windows security metadata files (on Linux and macOS, this pattern has no effect)
+*:Zone.Identifier
+
+# JSON -------------------------------------------
+# Ignore .json files: status reports and manifests pulled from workspaces stay local.
+*.json
+# ...except the shared Claude Code settings, which must reach every clone for the
+# destructive-git guardrail to be active (see CLAUDE.md "Agent guardrails").
+!.claude/settings.json
+# ...and the two cross-repo contracts.
+!docs/docs/status_report.schema.json
+!docs/docs/release_manifest.schema.json
