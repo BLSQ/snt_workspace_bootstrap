@@ -15,7 +15,7 @@ stopped being true moved to `HISTORY.md`.
 
 | File | Answers | Read it when |
 |---|---|---|
-| [`release_strategy.md`](release_strategy.md) | **Why** the release mechanism exists, what it delivers, and what is built today. | You need the shape of the whole thing, or the state of the manifest generator / Workspace Manager. |
+| [`release_strategy.md`](release_strategy.md) | **Why** the release mechanism exists, what it delivers, and what is built today. | You need the shape of the whole thing, or the state of the manifest generator / Workspace Deployer. |
 | [`PRODUCT_SPEC.md`](PRODUCT_SPEC.md) | **What** the workspace checker must do — statuses, report contract, build phases, open decisions. | You are building or reviewing the checker. |
 | [`pipeline_deployment_mechanism.md`](pipeline_deployment_mechanism.md) | **How** a pipeline is deployed into a workspace through the OpenHEXA API. | You are touching deployment, tokens or the GraphQL calls. |
 | [`docs/status_report.schema.json`](docs/status_report.schema.json) | **The contract**: the frozen JSON Schema of the checker's report (`schema_version: 1`). Machine-readable, not prose. | You are writing or validating a consumer of the report, or changing the report's shape. |

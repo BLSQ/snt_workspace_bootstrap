@@ -43,7 +43,7 @@ from openhexa.sdk.pipelines.runtime import get_pipeline
 # so a version deployed from here is byte-comparable with one pushed by CI.
 ZIPPED_SUFFIXES = (".py", ".ipynb", ".txt", ".md", ".r", ".sql")
 
-GITHUB_HEADERS = {"User-Agent": "snt-workspace-manager"}
+GITHUB_HEADERS = {"User-Agent": "snt-workspace-deployer"}
 
 # OpenHEXA appends " [v<number>]" to a version name when it is read back.
 VERSION_NUMBER_SUFFIX = re.compile(r"\s*\[v\d+\]\s*$")
@@ -60,7 +60,7 @@ class DeploymentAbortedError(RuntimeError):
     """The run was stopped on purpose, and the reason is already in the run's Messages."""
 
 
-@pipeline("snt_workspace_manager")
+@pipeline("snt_workspace_deployer")
 @parameter(
     "github_repo",
     name="GitHub repository",
@@ -107,7 +107,7 @@ class DeploymentAbortedError(RuntimeError):
     default=False,
     required=False,
 )
-def snt_workspace_manager(
+def snt_workspace_deployer(
     github_repo: str,
     release_tag: str | None,
     api_connection: str,
@@ -140,7 +140,7 @@ def deploy_release(
     backup_existing: bool,
     dry_run: bool,
 ) -> None:
-    """Run the deployment steps for `snt_workspace_manager`, in order."""
+    """Run the deployment steps for `snt_workspace_deployer`, in order."""
     snt_root_path = Path(workspace.files_path)
     if dry_run:
         current_run.log_info("DRY RUN - nothing will be written or registered.")
@@ -527,7 +527,7 @@ def deploy_new_version(
 ) -> None:
     """Make the pipeline's current version carry the release tag, registering a version if needed.
 
-    Re-running the manager on the same tag must converge, so the pipeline's current version is
+    Re-running the deployer on the same tag must converge, so the pipeline's current version is
     read first and compared with the release by content, not by name (a name is free text):
 
     * same files and already named with this tag: nothing to do, logged as a skip and counted
@@ -652,7 +652,7 @@ def build_version_input(pipeline_dir: Path, parsed: Pipeline, release: dict) -> 
 
     version_input = {
         "name": release["tag_name"],
-        "description": f"Deployed by snt_workspace_manager from release {release['tag_name']}.",
+        "description": f"Deployed by snt_workspace_deployer from release {release['tag_name']}.",
         "externalLink": release["html_url"],
         "zipfile": base64.b64encode(buffer.read()).decode("ascii"),
         "parameters": [p.to_dict() for p in parsed.parameters],
@@ -763,4 +763,4 @@ def write_release_marker(snt_root_path: Path, release_tag: str) -> None:
 
 
 if __name__ == "__main__":
-    snt_workspace_manager()
+    snt_workspace_deployer()

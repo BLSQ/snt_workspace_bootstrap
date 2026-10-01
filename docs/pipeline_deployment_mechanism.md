@@ -1,9 +1,9 @@
 # Deploying an OpenHEXA pipeline from inside a pipeline run
 
 Companion to [`release_strategy.md`](release_strategy.md), which explains *why* the Workspace
-Manager deploys `pipeline.py` instead of copying it. This document is the *how*.
+Deployer deploys `pipeline.py` instead of copying it. This document is the *how*.
 
-> Implemented in [`snt_workspace_manager/`](../../snt_workspace_manager/), running in the
+> Implemented in [`snt_workspace_deployer/`](../../snt_workspace_deployer/), running in the
 > `snt-development-sandbox` workspace. Verified end to end for 2 of 20 pipelines.
 >
 > This document describes the **current** mechanism. Past verifications against deleted fixtures,
@@ -37,9 +37,9 @@ parsed.timeout
 ```
 
 **This is AST-based, not import-based** (`openhexa/sdk/pipelines/runtime.py:225` uses `ast.parse`).
-That is what makes the whole approach viable: the Workspace Manager parses all 20 `pipeline.py`
+That is what makes the whole approach viable: the Workspace Deployer parses all 20 `pipeline.py`
 files **without importing them**, so none of their dependencies (`snt_lib`, `openhexa.toolbox`, …)
-need to be installed in the manager's own environment.
+need to be installed in the deployer's own environment.
 
 Use `Parameter.to_dict()` (`openhexa/sdk/pipelines/parameter/decorator.py:118`) — it emits exactly
 the keys `ParameterInput` accepts. Do not hand-build that dict: the backend rejects the entire
@@ -177,8 +177,8 @@ The checker therefore needs no credential at all. Method and raw result:
 
 9. **Version names must be unique within a pipeline.** `uploadPipeline` refuses a name that any
    version of that pipeline already holds, current or not, with `DUPLICATE_PIPELINE_VERSION_NAME`. The
-   manager therefore reads the current version first and chooses skip / relabel / `+redeploy-` name
-   (`release_strategy.md` § Workspace Manager). The `+` is accepted by OpenHEXA.
+   deployer therefore reads the current version first and chooses skip / relabel / `+redeploy-` name
+   (`release_strategy.md` § Workspace Deployer). The `+` is accepted by OpenHEXA.
 10. **Nothing can be deleted through a pipeline.** There is no way for a pipeline to delete another
     pipeline or a version, so a release that drops a pipeline leaves a stray behind
     (`PRODUCT_SPEC.md` §7.5). Whether a rename or delete API exists for versions was not established;
@@ -212,11 +212,11 @@ into `snt-development-sandbox`, with correct pipeline codes, parameters round-tr
 2. **Automate getting the `oh` token into a country workspace** (minting, storage, rotation). What
    the token *is* is now known (see Authentication above); placing it is still a manual copy-paste
    per workspace. **Low priority** by the user's decision — a question for the OpenHEXA devs once
-   there is a working checker and manager to demonstrate. `PRODUCT_SPEC.md` §7.3b.
+   there is a working checker and deployer to demonstrate. `PRODUCT_SPEC.md` §7.3b.
 3. ~~**Establish whether *reading* a pipeline version needs the `oh` token too.**~~ **Closed
    2026-09-22: it does not.** See Authentication above and [`HISTORY.md`](HISTORY.md) §2.4.
-4. ~~**Add a `push_snt_workspace_manager.yaml` workflow.**~~ **Closed 2026-09-30 (D19): no deployment
-   workflow for the manager or the checker.**
+4. ~~**Add a `push_snt_workspace_deployer.yaml` workflow.**~~ **Closed 2026-09-30 (D19): no deployment
+   workflow for the deployer or the checker.**
 
 ### R5 and the Template mechanism
 

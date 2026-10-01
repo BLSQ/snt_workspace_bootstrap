@@ -1,6 +1,6 @@
-# SNT Workspace Manager Pipeline
+# SNT Workspace Deployer Pipeline
 
-The **SNT Workspace Manager** deploys one GitHub release of this repository — the one named by
+The **SNT Workspace Deployer** deploys one GitHub release of this repository — the one named by
 `release_tag`, or the latest release when that is left empty — into the workspace it runs in. It moves both halves of the codebase on a single release tag: the R analytics
 (notebooks and `.r` helpers) are copied into the workspace filesystem, and each `<name>/pipeline.py`
 is registered as a new **version** of the matching OpenHEXA pipeline through the GraphQL API. It
@@ -130,7 +130,7 @@ particular is the mechanism this pipeline replaces.
 
 * **A new version of each pipeline** that is not already current at the release, named after the
   release tag (or `<tag>+redeploy-<date>`, see step 6), described as
-  `Deployed by snt_workspace_manager from release <tag>`, with `externalLink` set to the release's
+  `Deployed by snt_workspace_deployer from release <tag>`, with `externalLink` set to the release's
   GitHub page.
 
 > **Notes for the Data Analyst:**
@@ -166,8 +166,8 @@ particular is the mechanism this pipeline replaces.
 >   `default=None`.
 > - **Nothing is ever deleted, so a release cannot be "installed clean".** A pipeline can not delete
 >   another pipeline in OpenHEXA. A pipeline that a newer release no longer contains **stays in the
->   workspace** at the code of the release that last deployed it, and the manager does not mention it.
->   The same holds for analytics files. Only `snt_workspace_check` reports such strays. A person deletes
+>   workspace** at the code of the release that last deployed it, and the deployer does not mention it.
+>   The same holds for analytics files. Only `snt_workspace_checker` reports such strays. A person deletes
 >   them by hand in the OpenHEXA UI.
 > - **Missing pipelines are always created.** The code is derived from the pipeline name. The run verifies the created code
 >   matches the expected slug and raises if it does not; recovery is manual (delete and recreate in

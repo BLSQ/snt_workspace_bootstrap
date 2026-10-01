@@ -1,7 +1,7 @@
 """Check what is actually deployed in this OpenHEXA workspace against the SNT release manifests.
 
 Read-only. This pipeline writes its own report and nothing else - it never deletes, moves,
-overwrites, deploys or archives. `snt_workspace_manager` is the only component that changes
+overwrites, deploys or archives. `snt_workspace_deployer` is the only component that changes
 workspace state (docs/wip/PRODUCT_SPEC.md section 5.4).
 
 Phase 4 of the build plan (PRODUCT_SPEC.md section 6). Two modes (decision D11):
@@ -57,11 +57,11 @@ RELEASE_MARKER_NAME = ".snt_release"
 MANIFEST_ASSET_NAME = "release_manifest.json"
 
 # The reserved `release_tag` value that forces attribution mode even when .snt_release exists
-# (decision D17). Without it, attribution mode would be unreachable once snt_workspace_manager
+# (decision D17). Without it, attribution mode would be unreachable once snt_workspace_deployer
 # has run, short of deleting the marker by hand. Compared case-insensitively.
 NO_TARGET_TAG = "none"
 
-GITHUB_HEADERS = {"User-Agent": "snt-workspace-check"}
+GITHUB_HEADERS = {"User-Agent": "snt-workspace-checker"}
 GITHUB_PAGE_SIZE = 100
 
 # The OpenHEXA SDK's zip rule, mirrored from generate_zip_file() in openhexa/cli/api.py - the
@@ -96,27 +96,27 @@ REMEDIATION = {
     "attributed": None,
     "mismatch_known": (
         "This copy is another release's version of the file - see matching_releases and position. "
-        "Run snt_workspace_manager at the target release to bring it into line (the current copy is "
+        "Run snt_workspace_deployer at the target release to bring it into line (the current copy is "
         "archived first), or keep it deliberately."
     ),
     "unknown_content": (
         "This copy is not any version a release ever shipped - it was edited in place, or it is "
-        "corrupt. Run snt_workspace_manager at the target release (or, with no target, at the release "
+        "corrupt. Run snt_workspace_deployer at the target release (or, with no target, at the release "
         "you want) to restore it; the current copy is archived first."
     ),
     "missing": (
         "The target release ships this file and the workspace does not have it. Run "
-        "snt_workspace_manager at the target release to install it."
+        "snt_workspace_deployer at the target release to install it."
     ),
     "removed_in_target": (
         "An earlier release shipped this file and the target release no longer does. "
-        "snt_workspace_manager does not remove files, so it stays where it is; move it to archive/ "
+        "snt_workspace_deployer does not remove files, so it stays where it is; move it to archive/ "
         "by hand if it is no longer wanted."
     ),
     "added_after_target": (
         "Only releases newer than the target ship this file, so the workspace is ahead of the "
         "target here. Nothing to do unless you meant to go back to the target; "
-        "snt_workspace_manager does not remove files."
+        "snt_workspace_deployer does not remove files."
     ),
     "untracked": (
         "No release has ever shipped a file at this path. Reported for completeness only; the "
@@ -139,18 +139,18 @@ REMEDIATION_IN_ZIP = {
     "untracked": (
         "This file ships inside the deployed pipeline version, yet no release has ever contained "
         "it: the version was pushed from a tree carrying extra files. It is deployed code, not an "
-        "inert stray. Redeploy the pipeline from a release with snt_workspace_manager to replace it."
+        "inert stray. Redeploy the pipeline from a release with snt_workspace_deployer to replace it."
     ),
     "removed_in_target": (
         "The deployed pipeline version still carries a file the target release no longer ships. "
-        "Redeploy the pipeline at the target release with snt_workspace_manager to drop it."
+        "Redeploy the pipeline at the target release with snt_workspace_deployer to drop it."
     ),
 }
 
 PIPELINE_REMEDIATION = {
     "not_deployed": (
         "The target release ships this pipeline and the workspace has no version of it. Run "
-        "snt_workspace_manager at the target release to deploy it."
+        "snt_workspace_deployer at the target release to deploy it."
     ),
     "not_in_target": (
         "This pipeline is not part of the target release. A pipeline cannot delete another "
@@ -167,7 +167,7 @@ PIPELINE_REMEDIATION = {
 }
 
 
-@pipeline("snt_workspace_check")
+@pipeline("snt_workspace_checker")
 @parameter(
     "github_repo",
     name="GitHub repository",
@@ -181,7 +181,7 @@ PIPELINE_REMEDIATION = {
     name="Target release tag",
     help=(
         "Release to check this workspace against (e.g. v0.2.1-test). Leave empty to use the tag "
-        "recorded in .snt_release by the last snt_workspace_manager run; with neither, the "
+        "recorded in .snt_release by the last snt_workspace_deployer run; with neither, the "
         "workspace is attributed to releases without a target. Enter 'none' to force that "
         "attribution mode even when .snt_release exists."
     ),
@@ -189,7 +189,7 @@ PIPELINE_REMEDIATION = {
     default=None,
     required=False,
 )
-def snt_workspace_check(github_repo: str, release_tag: str | None) -> None:
+def snt_workspace_checker(github_repo: str, release_tag: str | None) -> None:
     """Hash this workspace against every release manifest and write a status report.
 
     Orchestration only: resolves the target release, loads every manifest, delegates the
@@ -300,7 +300,7 @@ def describe_no_target(resolved_from: str) -> str:
 
 
 def read_release_marker(snt_root_path: Path) -> str | None:
-    """Read the release tag the last snt_workspace_manager run claims to have deployed.
+    """Read the release tag the last snt_workspace_deployer run claims to have deployed.
 
     A workspace with no marker is the normal starting state for every country workspace
     today, so its absence is reported, never treated as an error.
@@ -429,8 +429,8 @@ def list_releases(github_repo: str) -> list[dict]:
 def download_manifest(release: dict) -> dict | None:
     """Download and parse release_manifest.json from a release's assets.
 
-    Adapted from snt_workspace_manager: pipelines are deployed as independent zips and cannot
-    share a module, so the two carry the same helper by design. Unlike the manager's, this
+    Adapted from snt_workspace_deployer: pipelines are deployed as independent zips and cannot
+    share a module, so the two carry the same helper by design. Unlike the deployer's, this
     one returns None for a release with no manifest asset, because here that is a finding
     about one release among many rather than a reason to stop.
 
@@ -454,7 +454,7 @@ def load_manifests(releases: list[dict]) -> tuple[dict, list[dict], list[dict]]:
     only that release shipped would otherwise be mislabelled `untracked` or `unknown_content`
     without anything saying so (PRODUCT_SPEC.md sections 5.4 and 5.5).
 
-    A manifest with no `pipelines` block predates the phase-0 generator. snt_workspace_manager
+    A manifest with no `pipelines` block predates the phase-0 generator. snt_workspace_deployer
     carries a fallback for that; this checker deliberately does not (PRODUCT_SPEC.md section
     2.1), so such a manifest is treated as unusable rather than half-read.
 
@@ -1142,7 +1142,7 @@ def list_unknown_pipelines(
 def call_graphql(token: str, operation: str, variables: dict) -> dict:
     """Call the OpenHEXA GraphQL API with an explicit bearer token, reporting errors usefully.
 
-    Copied from snt_workspace_manager - see download_manifest for why. The SDK's own
+    Copied from snt_workspace_deployer - see download_manifest for why. The SDK's own
     `graphql()` helper raises a bare HTTPError on a 4xx and discards the response body, which
     is where GraphQL puts the actual reason.
 
@@ -1276,7 +1276,7 @@ def attribution_summary(entries: list[dict], index: ReleaseIndex, releases_consi
     Decision D15, revised (PRODUCT_SPEC.md section 7.10). Each release is judged only on the
     paths it ships. A present file at a path the release does not ship is `extra` for it -
     neither agreement nor disagreement. Counting such files as disagreement made every
-    leftover of a removed file (the manager removes nothing, and a pipeline cannot delete
+    leftover of a removed file (the deployer removes nothing, and a pipeline cannot delete
     another) drag the newest release down, so a freshly upgraded workspace read as an older
     release (sandbox run of 2026-09-29).
 
@@ -1574,4 +1574,4 @@ def log_summary(report: dict, report_path: Path) -> None:
 
 
 if __name__ == "__main__":
-    snt_workspace_check()
+    snt_workspace_checker()

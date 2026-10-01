@@ -1,7 +1,7 @@
 [project]
 name = "snt_workspace_bootstrap"
 version = "0.1.0"
-description = "SNT workspace manager and checker maintained by Bluesquare Data Services team"
+description = "SNT workspace deployer and checker maintained by Bluesquare Data Services team"
 # Also ruff's target Python version (drives the UP and FA rules).
 requires-python = ">=3.11"
 

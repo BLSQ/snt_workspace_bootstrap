@@ -1,8 +1,8 @@
-# SNT Workspace Check Pipeline
+# SNT Workspace Checker Pipeline
 
 Reports what is actually deployed in this OpenHEXA workspace, compared against the GitHub releases
 of the SNT codebase. It is **read-only**: it writes a status report and changes nothing else.
-Installing and updating is `snt_workspace_manager`'s job. The report is a JSON file on the
+Installing and updating is `snt_workspace_deployer`'s job. The report is a JSON file on the
 workspace filesystem under **`snt_status/`**, not an OpenHEXA dataset (decision D3).
 
 It runs in one of two modes (decision D11):
@@ -32,7 +32,7 @@ Both modes report the per-release scores.
 * **`release_tag`** (String, Optional):
   * **Name:** Target release tag
   * **Description:** The release to check this workspace against, e.g. `v0.2.1-test`. Left empty, the
-    pipeline falls back to the tag recorded in `.snt_release` by the last `snt_workspace_manager`
+    pipeline falls back to the tag recorded in `.snt_release` by the last `snt_workspace_deployer`
     run. With neither, it runs in **attribution mode**. The reserved value **`none`** (any case)
     forces attribution mode even when `.snt_release` exists (decision D17), so a scheduled
     attribution check never needs the marker deleted. A release literally tagged `none` could
@@ -120,7 +120,7 @@ relative to the target by GitHub `published_at` (decision D4). In attribution mo
 |---|---|---|
 | Release list | GitHub API, `repos/<repo>/releases` | Yes |
 | `release_manifest.json` of every release | GitHub release assets, via `browser_download_url` | The target's, yes. Others: each missing one makes the report `incomplete` |
-| `.snt_release` | Workspace root, written by `snt_workspace_manager` | No. Only used when `release_tag` is empty |
+| `.snt_release` | Workspace root, written by `snt_workspace_deployer` | No. Only used when `release_tag` is empty |
 | Workspace files | Workspace filesystem | No. In verification mode, absence is the `missing` finding |
 | Current pipeline version zips, and the pipeline list | OpenHEXA GraphQL API, with the run's own token | No. In verification mode, absence is the `missing` finding; failure is an `errors` entry |
 
