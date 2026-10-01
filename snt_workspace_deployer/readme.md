@@ -7,12 +7,12 @@ is registered as a new **version** of the matching OpenHEXA pipeline through the
 publishes nothing to an OpenHEXA dataset — its output is the state of the workspace itself, plus a
 `.snt_release` marker file at the workspace root.
 
-It is the Phase 3/4 prototype of [`docs/wip/release_strategy.md`](../docs/wip/release_strategy.md);
+It is the Phase 3/4 prototype of [`docs/release_strategy.md`](../docs/release_strategy.md);
 the deployment mechanism is documented in
-[`docs/wip/pipeline_deployment_mechanism.md`](../docs/wip/pipeline_deployment_mechanism.md).
+[`docs/openhexa_deployment.md`](../docs/openhexa_deployment.md).
 
 > **Status: prototype. Reworked on 2026-09-30 (whole-release-only, version relabelling) and not yet
-> tested in a workspace; test plan in `docs/wip/PRODUCT_SPEC.md` §6.7.** The
+> tested in a workspace; test plan in [`docs/deployer.md`](../docs/deployer.md) §6.7.** The
 > first version was verified end to end on 2026-09-16 in `snt-development-sandbox` for
 > `snt_dhis2_extract` and `snt_map_extracts` only. It replaces the per-pipeline
 > `Pull scripts` toggle and the Template auto-update subscription, so do not run it against a
@@ -142,7 +142,7 @@ particular is the mechanism this pipeline replaces.
 >   never execute.
 > - **The zip carries the whole directory,** so `requirements.txt` and `readme.md` are deployed even
 >   though the manifest tracks only `pipeline.py`. This is the manifest gap described in
->   `release_strategy.md`: verification currently covers less than what is actually deployed.
+>   [`docs/contracts/release_manifest.md`](../docs/contracts/release_manifest.md): verification currently covers less than what is actually deployed.
 > - **Every failure is spelled out in the run's Messages.** A raised exception alone reaches only the
 >   run's logs, so each failure the pipeline anticipates (connection, release lookup, manifest,
 >   tarball, failed pipelines) is logged as `[ERROR] Cannot deploy: <reason and what to do>` before
@@ -155,7 +155,7 @@ particular is the mechanism this pipeline replaces.
 > - **One workspace, one release.** The expected use is to keep a workspace on the latest release
 >   and deploy forward. To run an older release, use a dedicated workspace rather than rolling this
 >   one back. Rolling back works and loses nothing, but leaves `+redeploy-` names and extra versions
->   behind (`docs/wip/PRODUCT_SPEC.md` §1.3).
+>   behind ([`docs/release_strategy.md`](../docs/release_strategy.md) §1.3).
 > - **Partial runs are expected to be re-run.** A failure leaves the workspace partially updated, by
 >   design — every failure is named in the final error and re-running converges on the release.
 >   Pipelines already at the release (same files, same name) are skipped, not refused.
@@ -174,5 +174,5 @@ particular is the mechanism this pipeline replaces.
 >   the UI).
 > - **R5 interaction.** This pipeline pushes versions **directly into the workspace that runs them**,
 >   which creates no OpenHEXA template and so is a different operation from the one
->   [`CLAUDE.md`](../CLAUDE.md) **R5** governs. R5 needs rewording before this is used in production
->   — see `pipeline_deployment_mechanism.md`.
+>   [`snt_development`'s `CLAUDE.md`](https://github.com/BLSQ/snt_development/blob/main/CLAUDE.md) **R5** governs. R5 needs rewording before this is used in production
+>   — see [`docs/openhexa_deployment.md`](../docs/openhexa_deployment.md).

@@ -1,12 +1,9 @@
 # SNT Release Strategy
 
-> Status: work in progress. Manifest generation, the Workspace Deployer and Python deployment are
-> built and verified in a sandbox; the verification pipeline is not started. Nothing here is live
-> in a country workspace yet.
->
-> This document describes the **current** design and state. Superseded designs, closed problems,
-> dead ends and verifications against deleted fixtures are in [`HISTORY.md`](HISTORY.md) — read that
-> before re-investigating anything here.
+> The **why** of the whole product: the problem, the design, tag immutability and the three
+> operations. Each component's spec and state is in its own file; [`CLAUDE.md`](../CLAUDE.md) says
+> which to read when. Section numbers like §1.3 are those of the former `PRODUCT_SPEC.md`, kept so
+> existing references still resolve.
 
 ## The problem
 
@@ -94,202 +91,63 @@ Explicitly out of scope:
   and Python via the API. The user then configures the workspace to unblock everything else.
 * **Diff / check** — hash what is actually in the workspace and compare against the release
   manifest, flagging edited files. Country-specific notebook variants (`<generic>_<CC>.ipynb`) are
-  flagged as deliberate overrides, not as drift — deferred past v1, see `PRODUCT_SPEC.md` §1.2.
+  flagged as deliberate overrides, not as drift — deferred past v1, see [`checker.md`](checker.md) §1.2.
 * **Update / downgrade** — back up modified files into `archive/<release_tag>/`, then overwrite
   with the target release. Updating forward is the path that matters: countries are expected to run
   an older release in a dedicated workspace rather than downgrade their main one, so a downgrade
-  only has to be safe, not clean (`PRODUCT_SPEC.md` §1.3, D25).
+  only has to be safe, not clean (§1.3, D25).
 
 The deployer writes `{"snt_release": "<tag>"}` into a hidden `.snt_release` file at the workspace
 root, so anything downstream can tell which manifest to compare against.
 
----
+## 1. The product
+
+A country workspace should be able to answer two questions without anyone reading a diff:
+
+1. **What is in here?** Which release does each file in this workspace belong to, and is anything
+   of unknown origin?
+2. **Is it what I asked for?** Given a target release, what matches, what is behind, what is ahead,
+   what is missing — and can I bring it into line, or deliberately keep what I have?
+
+The user-facing product is eventually an OpenHEXA web app. The web app is a UI/UX layer only: the
+work that cannot be done from a web app — pulling files into the workspace filesystem and
+registering pipeline versions through the OpenHEXA API — is done by pipelines. **This spec covers
+the pipelines. The web app is out of scope beyond the report contract it will consume ([`checker.md`](checker.md) §5.5).**
+
+### 1.1 Components
+
+| Component | Role | State |
+|---|---|---|
+| `snt_workspace_deployer` | **Fix / install.** Deploys one pinned release, always whole, into the workspace: R analytics to the filesystem, `pipeline.py` via the API. Cannot delete anything ([`deployer.md`](deployer.md) §7.5). | **BUILT**, prototype — changed 2026-09-30 (D21, D22), **not yet tested in a workspace** ([`deployer.md`](deployer.md) §6.7) |
+| `snt_workspace_checker` | **Check.** Read-only. Hashes what is actually in the workspace, attributes each file to a release, and writes a status report. | **BUILT**, phase 4 — both modes verified in the sandbox ([`checker.md`](checker.md) §6.3, [`checker.md`](checker.md) §6.5); report schema frozen at `schema_version: 1` ([`checker.md`](checker.md) §5.5, D18). No deployment workflow, by decision (D19) |
+| Release manifest generation | GitHub Action producing `release_manifest.json` per release | **BUILT** — covers everything the deploy zip ships |
+| Status web app | Reads the checker's report; offers "fix" or "leave as is" | Deferred |
+
+The checker and `snt_workspace_deployer` are **separate pipelines** (decision D2). The checker
+never writes anything except its own report; `snt_workspace_deployer` is the only component that changes
+workspace state.
+
+### 1.3 Expected usage: one workspace per release (D25)
+
+The working assumption, until real users say otherwise: **a country keeps one workspace on one
+release.** Typically that is a main workspace that tracks the latest release and is updated forward
+as releases come out. To run data through an old release (say, last year's), a country is expected
+to use a **dedicated workspace** deployed at that release, not to roll its main workspace back and
+then forward again.
+
+Consequence for this work: **moving forwards is the path that has to be solid; going back and
+forth between releases in one workspace is not a priority.** Downgrades and back-and-forth must stay
+*safe* — nothing deleted, superseded files archived, every failure reported — but they do not have
+to be *clean*: `+redeploy-` version names, extra versions, strays and checker statuses that read
+oddly after a rollback are acceptable. Do not spend effort polishing that path until there is
+feedback from actual use. Revisit this assumption once countries are running the release process.
 
 ## Where things stand
 
-### Sandbox
+Each component's state now lives with its spec:
 
-All of this was built against a disposable sandbox rather than the real repo or its CI. Two
-distinct things with confusingly similar names:
-
-* `BLSQ/snt_development_sandbox` — the **GitHub repo**. An independent repo, not a fork; local
-  remote is named `sandbox`. It holds one branch, `main`, seeded from `snt_development` @ `551ddd8`
-  minus the 20 `push_snt_*.yaml` deployment workflows (those target the real `snt-development`
-  workspace and must never fire from a sandbox). Cut every fixture release from `main`.
-* `snt-development-sandbox` — the **OpenHEXA workspace** the Workspace Deployer pipeline runs in. Its
-  `.snt_release` marker names a tag that no longer exists — harmless, and itself a usable test of how
-  the checker handles an unresolvable declared release.
-
-Fixture releases are listed in `PRODUCT_SPEC.md` §6.1; the tag series starts at `v0.1.0-test`.
-Earlier tag names are retired and must not be reused ([`HISTORY.md`](HISTORY.md) §4).
-
-### Manifest generation — done
-
-[`.github/workflows/generate_manifest.yaml`](../../.github/workflows/generate_manifest.yaml) runs on
-`release: published` (and `workflow_dispatch` for manual testing). It hashes every file a release
-ships and attaches `release_manifest.json` to the release. The workflow is committed in *this* repo;
-the sandbox copy is applied by hand.
-
-The generator has two halves, because a release reaches a workspace by two routes:
-
-1. **Filesystem half** — four glob patterns: `pipelines/**/code/*.ipynb`,
-   `pipelines/**/reporting/*.ipynb`, `pipelines/**/utils/*.r`, `code/**/*.r`.
-2. **Deployment half** — for each top-level directory holding a `pipeline.py`, walk it recursively
-   and keep every file whose suffix is in `{.py, .ipynb, .txt, .md, .r, .sql}`, minus the
-   `workspace/` subtree. That is a line-for-line mirror of `generate_zip_file()` in
-   `openhexa/cli/api.py`; the constants are commented with that provenance, and the suffix test is
-   case-insensitive there and here.
-
-**Why it mirrors the SDK rather than listing globs.** A glob list restates the SDK's rule in a
-second, drifting dialect — one pattern per suffix *per depth* — and needs a new line for every
-future nesting or suffix. Anchoring on `*/pipeline.py` also excludes `dev/` and `deprecated/`
-without naming them: `deprecated/` nests its eight pipelines one level deeper, so `*/pipeline.py`
-never matches inside it. Nothing is excluded by a denylist that a new top-level directory could slip
-past. (The rejected alternative is recorded in [`HISTORY.md`](HISTORY.md) §2.1.)
-
-The manifest also carries a `pipelines` block alongside `files` — per pipeline directory, its
-OpenHEXA `code` slug and the list of paths inside its zip. Shape and rationale:
-[`PRODUCT_SPEC.md`](PRODUCT_SPEC.md) §2.1. `files` is byte-compatible with the pre-phase-0 shape, so
-the block is purely additive.
-
-**Verified 2026-09-21** against `snt_development` @ `SNT25-670`, by building all 21 deployment zips
-with the SDK's *real* `generate_zip_file()` and asserting every zip member resolves to a manifest
-entry:
-
-```
-manifest files: 156 | zip members: 70 | zip members NOT in manifest: 0
-```
-
-The embedded script passes `ruff check` and `ruff format --check` under the repo's `pyproject.toml`.
-
-Two consequences worth knowing:
-
-* `snt_workspace_deployer` is itself a pipeline directory, so the manifest now describes the deployer
-  as well. That is wanted — a workspace can be told its deployer is out of date — but it does mean
-  the deployer can deploy a new version of itself.
-* If the SDK ever changes its suffix list, this generator goes stale silently. The checker's
-  `not_covered` status (`PRODUCT_SPEC.md` §5.1) is the tripwire for exactly that, which is why the
-  spec keeps it after phase 0 rather than deleting it.
-
-Country-specific notebook variants appear in the manifest undistinguished from generic files. That
-is intended — telling them apart is the verification pipeline's job, not the generator's.
-
-### Workspace Deployer — built, **changed 2026-09-30 and not yet fully tested**
-
-[`snt_workspace_deployer/`](../../snt_workspace_deployer/), an OpenHEXA pipeline running in
-`snt-development-sandbox`. Parameters: `github_repo`, `release_tag`, `api_connection`,
-`backup_existing`, `dry_run`. `release_tag` is optional: empty deploys the repository's latest
-release (D23), and the resolved tag is what names everything downstream. It always deploys the **whole** release, both halves together
-(decision D21): there is no option to sync only the analytics, deploy only the pipelines, restrict to
-some pipelines, or skip creating missing ones. It:
-
-1. resolves the release via the GitHub API — by tag, or `/releases/latest` when no tag is given —
-   and downloads `release_manifest.json` from its assets;
-2. downloads the release **source tarball** and extracts it;
-3. copies every manifest-tracked R/notebook file into `workspace.files_path`, archiving any
-   existing copy under `archive/<release_tag>/` first;
-4. deploys each pipeline through the OpenHEXA API (see below), creating any that is missing;
-5. writes `.snt_release`.
-
-`split_manifest()` decides which manifest entries are filesystem analytics and which are deployed
-inside a zip. It splits by *directory*, reading the manifest's `pipelines` block where present and
-falling back to a `<name>/pipeline.py` derivation for pre-phase-0 manifests. **No live release
-exercises that fallback any more**, and legacy manifests are not supported, so it is to be deleted
-in a PR of its own (`PRODUCT_SPEC.md` §2.1, D26).
-
-**Version naming on deploy (2026-09-30, D22).** OpenHEXA refuses two versions of one pipeline with
-the same name (`DUPLICATE_PIPELINE_VERSION_NAME`), and the deployer names each version after the
-release tag. Re-running a tag used to fail for every pipeline already deployed (observed 2026-09-22).
-Most pipelines are also byte-identical across many releases, so a workspace deployed at
-`v0.1.0-test` and then `v0.2.1-test` used to *look* mostly like `v0.1.0-test`. `deploy_new_version()`
-now reads the pipeline's current version and compares its **contents** with the release:
-
-| Current version | Action |
-|---|---|
-| Same files, already named with this tag | Skip; counts as a success (the re-run case) |
-| Same files, another name | Register again under the tag, so the workspace reads as being at the release |
-| Different files | Register under the tag |
-| Different files, current version already carries the tag | Register as `<tag>+redeploy-<YYYYMMDD>` (`…T<HHMMSS>Z` for a second one that day), with a warning |
-| Plain tag refused because an older, non-current version holds it (e.g. a rollback) | Same `+redeploy-` fallback |
-
-So a full run leaves every pipeline's current version named after the tag, at the price of one extra
-version per unchanged pipeline per release. `+` in a version name is accepted by OpenHEXA (Giulia,
-2026-09-30). The checker strips only the `[vN]` suffix, so it reads a `+redeploy-` name as claiming no
-release (`version_name_matches_content: null`); teaching `claimed_release_tag` to strip it is a
-one-line change, **not yet made**.
-
-**Failures reach the run's Messages (2026-10-01, D24).** OpenHEXA shows a raised exception only in
-the run's logs, so a run could stop with an `INFO` line as the last message and no reason given
-(observed with an empty tag resolving to `v0.4.0-test`, which has no manifest). Every anticipated
-failure now goes through `abort_run()`, which logs `[ERROR] Cannot deploy: <reason and fix>` before
-raising, and the pipeline function catches anything else and logs it as an unexpected error. A
-GitHub 404 on the release is diagnosed into its actual cause: repository missing or private, no
-published release, only pre-releases, or unknown tag.
-
-**What the deployer cannot do — keep in mind, discuss with the OpenHEXA devs.**
-
-* **A pipeline cannot delete a pipeline in OpenHEXA**, so a "factory reset" (make the workspace hold
-  exactly the release and nothing else) cannot be implemented. The same goes for the filesystem: the
-  deployer moves superseded files to `archive/`, it never deletes them (`PRODUCT_SPEC.md` §5.4).
-* **A pipeline that a later release drops stays in the workspace**, as a stray left over from an
-  earlier release, and it keeps its old code. The deployer does not touch it, does not warn about it,
-  and nothing marks it as no longer part of the release. It is confusing for an operator, who sees a
-  pipeline in the list that the release no longer ships. Only the checker notices, as
-  `pipelines[].in_target: false` (report-and-leave, `PRODUCT_SPEC.md` §7.5). Deleting it is a manual
-  UI action. Not being fixed; the open question is whether OpenHEXA could offer a way (an API
-  mutation callable from a pipeline, or a way to archive/hide a pipeline).
-* The same applies to analytics files a release removes: they remain on the filesystem.
-
-**Testing state.** The 2026-09-30 changes (D21, D22) pass `ruff` and an offline stub test of
-`deploy_new_version()` (seven cases). **They have not been run in a workspace.** The full test plan
-is `PRODUCT_SPEC.md` §6.7. Still unverified from before: **`backup_existing`**, since every verified
-run so far was against an empty workspace. Past verification runs: [`HISTORY.md`](HISTORY.md) §4.2.
-
-### Python deployment — done
-
-`pipeline.py` is **not** copied into the workspace filesystem. OpenHEXA does not run pipelines from
-the filesystem: each pipeline is a registered object and each of its versions stores its own zipped
-copy of the code, which is what the runner downloads.
-
-The full mechanism — the three-step API sequence, exact GraphQL payloads, token handling and
-gotchas — is in **[`pipeline_deployment_mechanism.md`](pipeline_deployment_mechanism.md)**. In short:
-
-* No CLI and no Docker needed. `openhexa.sdk.pipelines.runtime.get_pipeline()` parses a pipeline's
-  parameters by **AST**, not by importing it, so the deployer handles all 20 pipelines without their
-  dependencies installed.
-* Authentication must use a **workspace API token read from the `oh` CUSTOM connection**. A run's
-  own `HEXA_TOKEN` is refused.
-* `createPipeline` accepts the nested form that creates a pipeline and its first version atomically,
-  so **bootstrapping an empty workspace needs no manual UI step.**
-
-Proven for **2 of 20** pipelines in the original 2026-09-16 run, byte-identical to the manifest hash;
-the phase 1–4 sandbox runs since deployed the whole fixture release (21 pipelines) through it.
-
-### Verification pipeline — phase 1 done
-
-An OpenHEXA pipeline that hashes what is actually in a workspace, compares it against the release
-manifests, and reports per file which release it matches, or that it matches none.
-
-[`snt_workspace_checker/`](../../snt_workspace_checker/) holds the phase-1 build: verification against a
-single target release, both sources hashed, the four statuses `match` / `unknown_content` /
-`missing` / `unreadable`, and the report written to `snt_status/`. It is credential-free. Phase 1
-iterated over the target manifest only. **Phase 2 (built and verified in the sandbox 2026-09-29)**
-loads every release's manifest and walks the filesystem, which gives the full status taxonomy. What
-changed and why: [`PRODUCT_SPEC.md`](PRODUCT_SPEC.md) §6.3. **Phase 3 (attribution mode, with
-per-release agreement and completeness in both modes) was built and verified in the sandbox on
-2026-09-29.** See §6.4–§6.5 there. Phase 4 (schema freeze) is next.
-
-**Verified 2026-09-22** in `snt-development-sandbox`, deployed at `v0.1.0-test` and checked against
-it: **163/163 `match`**, 89 filesystem + 74 pipeline-version entries, `incomplete: false`, no errors.
-The run also caught a real defect in the checker itself — see
-[`PRODUCT_SPEC.md`](PRODUCT_SPEC.md) §6.2 for what it established and
-[`HISTORY.md`](HISTORY.md) §1 for the version-name gotcha behind it.
-
-Its requirements, statuses, report contract and build phases live in
-[`PRODUCT_SPEC.md`](PRODUCT_SPEC.md). Design inputs settled here:
-
-* **Two sources to hash** — the filesystem for R analytics, and each pipeline version's stored zip
-  for the Python half (readable via `get_pipeline`, which returns full file contents).
-* `.snt_release` tells the verifier which manifest to fetch, without being told.
-* Country-specific variants should eventually be recognised as deliberate overrides rather than
-  drift — deferred past v1 (decision D5).
+* Sandbox — [`sandbox.md`](sandbox.md)
+* Manifest generation — [`contracts/release_manifest.md`](contracts/release_manifest.md)
+* Workspace Deployer — [`deployer.md`](deployer.md)
+* Python deployment — [`openhexa_deployment.md`](openhexa_deployment.md)
+* Verification pipeline (the checker) — [`checker.md`](checker.md)

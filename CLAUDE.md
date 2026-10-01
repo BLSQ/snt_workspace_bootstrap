@@ -1,7 +1,7 @@
 # CLAUDE.md — working rules for `snt_workspace_bootstrap`
 
-> **Placeholder.** The docs are being restructured; see [`docs/README.md`](docs/README.md) meanwhile.
-> Imported unchanged from `BLSQ/snt_development@d9acafc` — see the import commit.
+Router for this repo: the guardrails, what the repo is, and which two or three docs to read for a
+task. Facts live in `docs/`, each in one file; this file only points at them.
 
 ---
 
@@ -52,3 +52,138 @@ Adding or relaxing a pattern means editing **both** layers — `RULES` in the Py
 an agent behaving normally, not one determined to get around them, and they do not constrain a
 human at a terminal. Do not weaken them to make a task easier; if a rule is genuinely wrong,
 change it in a PR of its own.
+
+---
+
+## What this repo is
+
+Two OpenHEXA pipelines that manage which **release** of the SNT codebase a country workspace runs:
+
+* **`snt_workspace_deployer`** — installs one GitHub release, whole: R analytics into the workspace
+  filesystem, every `pipeline.py` registered through the OpenHEXA API, then writes `.snt_release`.
+  The only component that changes a workspace. Built; the 2026-09-30 changes (whole-release only and
+  version naming on re-deploy, D21/D22) are not yet tested in a workspace (`docs/deployer.md` §6.7).
+* **`snt_workspace_checker`** — read-only. Hashes what is in a workspace and reports, per file, which
+  releases it matches. Built and verified in the sandbox; its report is frozen at `schema_version: 1`.
+
+The goal is an **SNT workspace bootstrap**: set up an empty workspace by deploying every pipeline
+from `snt_development`, the checker and the two OpenHEXA web apps, each from its own repo, then move it
+to newer or older releases on request. Nothing here is live in a country workspace yet.
+
+Moved out of `snt_development` on 2026-10-01 (import `895b2b9`, from `d9acafc`), then renamed from
+`snt_workspace_manager` / `snt_workspace_check` (M7). Older docs and HISTORY entries use the old names.
+
+### What it depends on in other repos
+
+| Repo / service | What this repo relies on |
+|---|---|
+| [`BLSQ/snt_development`](https://github.com/BLSQ/snt_development) | Produces every release and its `release_manifest.json` (its `.github/workflows/generate_manifest.yaml`). The manifest's shape is the contract in `docs/contracts/`. Facts: [`docs/context/snt_development.md`](docs/context/snt_development.md) |
+| `BLSQ/snt_development_sandbox` + the `snt-development-sandbox` workspace | Where both pipelines are tested; both still default `github_repo` to the sandbox repo ([`docs/sandbox.md`](docs/sandbox.md)) |
+| `openhexa-sdk` | `get_pipeline()` (AST parse of parameters), the zip rule the manifest mirrors, the GraphQL API ([`docs/openhexa_deployment.md`](docs/openhexa_deployment.md)) |
+
+## Repo map
+
+```
+snt_workspace_deployer/   pipeline.py, readme.md, requirements.txt — deploys a release
+snt_workspace_checker/    pipeline.py, readme.md, requirements.txt — checks a workspace
+docs/                     the specs; see "Read X when Y" below
+docs/contracts/           machine-readable contracts (JSON Schema) and their prose
+docs/context/             facts about other repos these tools depend on
+tests/                    offline tests: the checker stub, contract fixtures (tests/fixtures/)
+tools/                    d9_notebook_drift.py — the D9 notebook-drift measurement (stdlib only)
+dev/environment.yml       the local conda env (ruff, pytest, jsonschema, openhexa.sdk). Never runs on OpenHEXA.
+pyproject.toml            ruff's rulebook. Never runs on OpenHEXA.
+.claude/                  agent guardrails (R19). Active on clone.
+ignore/                   local only, gitignored: sandbox reports, scratch
+```
+
+Neither pipeline has a deployment workflow, by decision (D19). You deploy them by hand with the
+`openhexa` CLI, or the deployer deploys them like any other pipeline.
+
+## Commands
+
+```bash
+conda env create -f dev/environment.yml   # once; later: conda env update -f dev/environment.yml --prune
+conda activate snt_workspace_bootstrap
+
+ruff check .                              # rules in pyproject.toml (line-length 110)
+ruff format .
+pytest tests/ -q                          # offline: checker stub + contract fixtures
+
+# After any @parameter edit: the same AST parse the backend runs at deploy time
+python -c "from pathlib import Path; from openhexa.sdk.pipelines.runtime import get_pipeline; \
+print([p.code for p in get_pipeline(Path('snt_workspace_deployer')).parameters])"
+
+# D9 measurement against a downloaded workspace copy (defaults to a sibling snt_development clone)
+python tools/d9_notebook_drift.py <workspace_copy> [<repo_root>]
+```
+
+**No CI runs anything here.** `ruff` and `pytest` run only when someone runs them. `ruff check .`
+reports 28 known findings, all inherited from `snt_development` (27 rule codes in `pyproject.toml`,
+1 in the hook), plus 2 of the same kind for the `tests/` exemption. Fixing them is an open question
+in the [move plan](https://claude.ai/artifact/VbANSSkNW93gx9RpEWqkTp).
+Nothing tests either pipeline against a real workspace: verify by reading, run the stubs, and say
+plainly what you could not verify. Deploying and running in the sandbox is done by the user.
+
+## Rule register
+
+IDs R17–R19 are carried from `snt_development` with the same numbers, so a citation means the same in
+both repos. R3/R5 and the rest of that register stay there ([`docs/context/snt_development.md`](docs/context/snt_development.md)).
+
+| ID | Rule | Status |
+|---|---|---|
+| **R17** | Failure messages a run surfaces start with `[ERROR]` or `[WARNING]`, chosen deliberately. OpenHEXA maps the prefix to a severity, and a `[WARNING]` does not fail the run, so labelling real data loss `[WARNING]` hides it. The deployer's `[ERROR] Cannot deploy: …` (D24) relies on this | `convention` |
+| **R18** | Python: snake_case, line-length 110, numpydoc docstrings with a `Returns` section | `ruff`, run by hand |
+| **R19** | Agents never run destructive / history-rewriting `git` or `gh` commands | `enforced` — hook + `permissions.deny` (above) |
+| **DOC1** | Current state only in the live docs. A paragraph about what something *used to be*, or a verification against something that no longer exists, moves to `docs/HISTORY.md`, leaving a link | `convention` |
+| **DOC2** | Nothing is deleted, it is relocated. A closed problem keeps its write-up in HISTORY | `convention` |
+| **DOC3** | Decisions live in [`docs/decisions.md`](docs/decisions.md), numbered `D<n>`, append-only, cited rather than re-argued | `convention` |
+| **DOC4** | Each fact lives in one file. A new fact goes where the routing table below sends a reader looking for it | `convention` |
+| **DOC5** | A change to a report or manifest shape updates its schema in `docs/contracts/` in the same change. What is breaking is stated in each schema's `description` (and for the report in `docs/checker.md` §5.5): a new key or enum value is not, a rename, removal or change of meaning is | `convention` |
+
+## Read X when Y
+
+Read only what the task needs. `docs/HISTORY.md` is **never** read by default.
+
+| Path | Holds | Read it when |
+|---|---|---|
+| [`docs/deployer.md`](docs/deployer.md) | Deployer spec, current state, phase-5 test plan, limits (strays, no deletes) | Working on the deployer |
+| [`docs/checker.md`](docs/checker.md) | Statuses, modes, attribution, report contract prose, build phases, open decisions | Working on the checker |
+| [`docs/contracts/release_manifest.schema.json`](docs/contracts/release_manifest.schema.json) + [`release_manifest.md`](docs/contracts/release_manifest.md) | Producer ↔ consumer contract; how it is generated; the `pipelines` block; the legacy fallback | Changing manifest reading or writing |
+| [`docs/contracts/status_report.schema.json`](docs/contracts/status_report.schema.json) | The checker's frozen report (`schema_version: 1`) — the authority over `checker.md` §5.5 | Changing or consuming the report |
+| [`docs/contracts/snt_release_marker.md`](docs/contracts/snt_release_marker.md) | `.snt_release` | Reading or writing the marker |
+| [`docs/openhexa_deployment.md`](docs/openhexa_deployment.md) | GraphQL deploy sequence, tokens, gotchas, Templates/R5 | Touching deployment or credentials |
+| [`docs/context/snt_development.md`](docs/context/snt_development.md) | The source repo's facts these tools depend on | Anything touching what a release contains |
+| [`docs/release_strategy.md`](docs/release_strategy.md) | Why, tag immutability, the three operations, components, one workspace per release | Big-picture questions |
+| [`docs/decisions.md`](docs/decisions.md) | D1–D26, append-only | Before reopening any choice |
+| [`docs/sandbox.md`](docs/sandbox.md) | Sandbox repo and workspace, fixture releases, expected check results | Testing |
+| [`docs/HISTORY.md`](docs/HISTORY.md) | Dead ends, closed issues, superseded designs and layouts | Before re-investigating something that seems solved |
+| [`tests/`](tests/) | Offline stub and contract tests | Before committing a change to either pipeline or a schema: run them |
+
+**Typical tasks:**
+
+* **Deployer change:** `deployer.md`, then `openhexa_deployment.md`. Add the manifest contract if it
+  touches `split_manifest()` or `download_manifest()`.
+* **Checker change:** `checker.md` and `contracts/status_report.schema.json`. Extend
+  `tests/test_checker_stub.py` rather than starting a new test.
+* **Manifest change:** `contracts/release_manifest.schema.json` + `release_manifest.md`, then
+  `context/snt_development.md`. The generator lives in `snt_development`, so a shape change is a
+  change in both repos.
+
+### Where a § reference lives
+
+Section numbers (§) in the docs are those of the former `PRODUCT_SPEC.md`, kept in each heading so
+references still resolve after the 2026-10-01 split:
+
+| File | Former `PRODUCT_SPEC.md` sections |
+|---|---|
+| `docs/release_strategy.md` | §1, §1.1, §1.3 |
+| `docs/checker.md` | §1.2, §2, §3, §3.1, §4–§5, §6, §6.2–§6.6, §7, §7.2, §7.6, §7.8–§7.11 |
+| `docs/deployer.md` | §6.7, §7.5 |
+| `docs/openhexa_deployment.md` | §7.3, §7.7 |
+| `docs/contracts/release_manifest.md` | §2.1, §7.1 |
+| `docs/contracts/snt_release_marker.md` | §3.2, §7.4 |
+| `docs/sandbox.md` | §6.1 |
+| `docs/decisions.md` | §8 |
+
+A § in `docs/HISTORY.md` refers to HISTORY's own sections unless it names another file.

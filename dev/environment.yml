@@ -20,7 +20,9 @@ dependencies:
   # Floor, not pin. ../pyproject.toml sets `preview = true`, which enables lint rules that
   # are still being added, so two colleagues on different ruff versions can get different
   # results from identical code. Raise this floor when the team agrees to a newer ruff.
-  - ruff>=0.16          # the repo's only automated code check; rules live in ../pyproject.toml
+  - ruff>=0.16          # rules live in ../pyproject.toml
+  - pytest              # offline stub and contract tests in ../tests/
+  - jsonschema          # tests validate fixtures against ../docs/contracts/*.schema.json
   - pip
   - pip:
       # Not on conda-forge. For editor autocomplete on the @pipeline / @parameter

@@ -1,20 +1,16 @@
 # SNT Release Management — history, closed issues and lessons learned
 
-> **Read this before re-investigating anything in `docs/wip/`.**
+> **Read this before re-investigating anything in `docs/`.**
 >
 > Nothing in this file describes the current state of the system. It is the opposite: it is where
 > superseded designs, closed problems, deleted fixtures and dead ends are kept, so that a reader —
 > human or agent — does not rediscover them, re-litigate a settled decision, or mistake an old
 > artefact for a live one.
 >
-> The current state lives in:
+> The current state lives in the files [`CLAUDE.md`](../CLAUDE.md) routes to. Until 2026-10-01 these
+> were `PRODUCT_SPEC.md`, `release_strategy.md` and `pipeline_deployment_mechanism.md` (§3.3).
 >
-> * [`PRODUCT_SPEC.md`](PRODUCT_SPEC.md) — what the checker must do (requirements).
-> * [`release_strategy.md`](release_strategy.md) — why the release mechanism exists and what is built.
-> * [`pipeline_deployment_mechanism.md`](pipeline_deployment_mechanism.md) — how a pipeline is
->   deployed through the OpenHEXA API.
->
-> Rule of thumb when editing any of those three: if a paragraph explains what something *used to be*,
+> Rule of thumb when editing any of those: if a paragraph explains what something *used to be*,
 > or records a verification against something that no longer exists, it belongs here instead.
 
 **Contents**
@@ -56,7 +52,7 @@ tarball** — one request — and extract.
 
 The same limit later drove the question of how the checker obtains every release's manifest. That
 turned out not to be a constraint, because asset downloads are not charged per file
-(`PRODUCT_SPEC.md` §7.2, closed 2026-09-29).
+([`checker.md`](checker.md) §7.2, closed 2026-09-29).
 
 ### A pipeline version's name does not read back as it was submitted
 
@@ -66,7 +62,7 @@ pushed by the CLI with no name of its own reads back as just `v3`.)
 
 `snt_workspace_check` compared that field to the target tag with `==`, so the comparison was never
 true and `version_name_matches_content` came back `null` for all 22 pipelines — the entire
-name-versus-content check of `PRODUCT_SPEC.md` §3.1 was silently switched off while the report looked
+name-versus-content check of [`checker.md`](checker.md) §3.1 was silently switched off while the report looked
 perfectly healthy. Caught on the checker's first real run (2026-09-22) only because *every* pipeline
 reported `null`, which is not a plausible distribution.
 
@@ -94,7 +90,7 @@ see §2.4, which is why the checker needs no credential.
 
 ### Measuring the GitHub rate limit across runs does not work
 
-To test whether manifest downloads count against the 60/hour limit (`PRODUCT_SPEC.md` §7.2), the
+To test whether manifest downloads count against the 60/hour limit ([`checker.md`](checker.md) §7.2), the
 first attempt compared the `X-RateLimit-Remaining` header across two consecutive checker runs, on
 2026-09-29 at 12:25 and 12:43. Both logged **59**. That proved nothing, for two reasons:
 
@@ -113,7 +109,7 @@ unit of measurement**. Nothing about a shared-IP budget can be inferred by compa
 
 ### 2.1 The manifest under-described what is deployed — closed 2026-09-21
 
-*Was: `PRODUCT_SPEC.md` §7.1, blocking phase 1. Fixed as phase 0 (decision D10).*
+*Was: [`release_manifest.md`](contracts/release_manifest.md) §7.1, blocking phase 1. Fixed as phase 0 (decision D10).*
 
 **The problem.** The manifest's `*/pipeline.py` pattern tracked one file per pipeline, but
 deployment zips the **whole pipeline directory**. `snt_map_extracts` was deployed with `utils.py`,
@@ -141,7 +137,7 @@ unverified. `*/**/*.py` additionally sweeps up unrelated top-level directories (
 
 **The fix that was applied** — reimplementing the SDK's own selection rule, anchored on
 `*/pipeline.py` — is current design and is described in
-[`release_strategy.md`](release_strategy.md) § "Manifest generation".
+[`release_manifest.md`](contracts/release_manifest.md).
 
 ### 2.2 Widening the manifest broke an existing consumer
 
@@ -161,7 +157,7 @@ and the new one: **86 analytics files in all three**, so old releases deployed e
 
 Both of those releases were deleted in the sandbox reset (§4), so that verification stands as a
 record but is no longer repeatable, and **no live release exercises the fallback path**. That leaves
-one open item, carried in `PRODUCT_SPEC.md` §2.1: keep a legacy manifest as a local test fixture, or
+one open item, carried in [`release_manifest.md`](contracts/release_manifest.md) §2.1: keep a legacy manifest as a local test fixture, or
 delete the fallback in a PR of its own. Untested back-compat code for a case that can no longer
 occur is worse than either.
 
@@ -169,18 +165,18 @@ occur is worse than either.
 
 It was built as a pipeline version inside `snt-development-sandbox` with no copy in the repository —
 exactly the "no version-propagation story" problem this project exists to fix. Committed in
-`5cb7995`, widened in `16bd149`; it now lives at [`snt_workspace_manager/`](../../snt_workspace_manager/)
+`5cb7995`, widened in `16bd149`; it now lives at [`snt_workspace_manager/`](../snt_workspace_deployer/)
 with `pipeline.py`, `requirements.txt` and `readme.md`. No `push_*.yaml` workflow yet, pending the
-R5 wording question (`pipeline_deployment_mechanism.md`).
+R5 wording question (`openhexa_deployment.md`).
 
 ### 2.4 Does *reading* a pipeline version need the `oh` token? — closed 2026-09-22
 
-*Was: `PRODUCT_SPEC.md` §7.3, the last thing blocking phase 1.*
+*Was: [`openhexa_deployment.md`](openhexa_deployment.md) §7.3, the last thing blocking phase 1.*
 
 **The question.** Deployment is refused with a run's own `HEXA_TOKEN` (§1, above). If *reading* a
 version's zip were refused too, the checker would need a workspace-scoped credential in every
 country workspace — which would have chained the read-only checker to the unsolved operational
-problem in §7.3b, and taken the unattended daily check (`PRODUCT_SPEC.md` §7.6) with it.
+problem in §7.3b, and taken the unattended daily check ([`checker.md`](checker.md) §7.6) with it.
 
 **The answer: no. `HEXA_TOKEN` reads `currentVersion.zipfile` in full.** The checker needs no
 credential.
@@ -204,7 +200,7 @@ Two design points worth keeping, because they are why the result is trustworthy:
   the pipeline at all" from "can see it but not its contents". Both came back `ok`, so neither
   failure mode is in play.
 
-The probe source is `ignore/SNT25-670/token_probe/` (local, not committed — `ignore/` is gitignored).
+The probe source is `ignore/SNT25-670/token_probe/` in a local `snt_development` clone (never committed, not carried over to this repo).
 
 ---
 
@@ -214,7 +210,7 @@ The probe source is `ignore/SNT25-670/token_probe/` (local, not committed — `i
 
 The original `generate_manifest.yaml` embedded this script. It tracked 106–107 files. It is
 **superseded** by the committed
-[`.github/workflows/generate_manifest.yaml`](../../.github/workflows/generate_manifest.yaml), which
+[`.github/workflows/generate_manifest.yaml`](https://github.com/BLSQ/snt_development/blob/main/.github/workflows/generate_manifest.yaml), which
 tracks 156 and emits a `pipelines` block. Kept only so a manifest found in the wild can be dated:
 a manifest with no `pipelines` key and ~106 entries came from this.
 
@@ -251,7 +247,7 @@ excluding `deprecated/`.
 ### 3.2 The original product-spec draft — 2026-09-18
 
 `product_spec_draft.md` was the user's free-form statement of intent. It was consolidated into
-[`PRODUCT_SPEC.md`](PRODUCT_SPEC.md) the same day and the file removed. Its substance is reproduced
+`PRODUCT_SPEC.md` (§3.3) the same day and the file removed. Its substance is reproduced
 here because it is the only record of what was asked for before the requirements were formalised —
 useful if a requirement in the spec ever looks arbitrary.
 
@@ -288,11 +284,75 @@ The draft's four open questions, and where each landed:
 
 | Draft question | Resolution |
 |---|---|
-| One pipeline for check + fix, or two? | Two — decision **D1**/**D2**, `PRODUCT_SPEC.md` §8. |
-| A mechanism to import every release's manifest | Closed 2026-09-29: fetch all on every run, which costs about one API request (`PRODUCT_SPEC.md` §7.2). |
+| One pipeline for check + fix, or two? | Two — decision **D1**/**D2**, [`decisions.md`](decisions.md) §8. |
+| A mechanism to import every release's manifest | Closed 2026-09-29: fetch all on every run, which costs about one API request ([`checker.md`](checker.md) §7.2). |
 | What to do with files not in the manifest ("ignore"?) | Not ignored: **reported** in an `untracked` bucket, never acted on — decision **D6**. |
-| Different releases having different file lists | Covered by the `missing` / `removed_in_target` statuses, `PRODUCT_SPEC.md` §5.1. |
+| Different releases having different file lists | Covered by the `missing` / `removed_in_target` statuses, [`checker.md`](checker.md) §5.1. |
 | Test repo needs a `latest` release | **Rejected.** GitHub's `/releases/latest` endpoint already resolves to the newest non-prerelease release; a release *named* `latest` would collide with it. |
+
+### 3.3 The `docs/wip/` layout — superseded 2026-10-01
+
+Until the move to `BLSQ/snt_workspace_bootstrap`, these docs lived in `snt_development/docs/wip/` as
+five files plus two schemas. Session 3 of the move split them by component (see `CLAUDE.md`). What
+the old index and the old preambles said, kept here because they are no longer true (links removed,
+names as they were):
+
+#### `docs/wip/` — SNT release management
+
+Working documents for the release / workspace-versioning effort (SNT25-670). Nothing described here
+is live in a country workspace yet.
+
+> **This folder is destined to become its own repository** (`PRODUCT_SPEC.md` D18). It lives inside
+> `snt_development` for now so that agents working on the pipelines have the context at hand. Keep it
+> self-contained: machine-readable contracts go in `docs/` (today,
+> `status_report.schema.json`, the frozen report schema, and
+> `release_manifest.schema.json`, the manifest contract), and a
+> link that leaves this folder is a link to revisit at the move.
+
+**Six files, and they do not overlap.** Each states only what is *currently* true; anything that
+stopped being true moved to `HISTORY.md`.
+
+| File | Answers | Read it when |
+|---|---|---|
+| `release_strategy.md` | **Why** the release mechanism exists, what it delivers, and what is built today. | You need the shape of the whole thing, or the state of the manifest generator / Workspace Manager. |
+| `PRODUCT_SPEC.md` | **What** the workspace checker must do — statuses, report contract, build phases, open decisions. | You are building or reviewing the checker. |
+| `pipeline_deployment_mechanism.md` | **How** a pipeline is deployed into a workspace through the OpenHEXA API. | You are touching deployment, tokens or the GraphQL calls. |
+| `docs/status_report.schema.json` | **The contract**: the frozen JSON Schema of the checker's report (`schema_version: 1`). Machine-readable, not prose. | You are writing or validating a consumer of the report, or changing the report's shape. |
+| `docs/release_manifest.schema.json` | **The contract** between a release's producer and its consumers: the JSON Schema of `release_manifest.json` (D26). Machine-readable, not prose. | You are changing how the manifest is generated or read, or publishing releases from another repository. |
+| `HISTORY.md` | **What is no longer true** — superseded designs, closed issues, dead ends, deleted fixtures, the original spec draft. | **Before** investigating anything that smells already-solved, or before reopening a decision. |
+
+Local, uncommitted companions under `ignore/SNT25-670/` (runbooks containing `git`/`gh` commands for
+a human to run) are referenced by name where relevant.
+
+#### `PRODUCT_SPEC.md` and `release_strategy.md` preambles
+
+#### SNT Release Management — Product Spec
+
+> Status: specification, work in progress. This is where the checker's **requirements** live;
+> `release_strategy.md` keeps the *why* and the state of what is built,
+> `pipeline_deployment_mechanism.md` the deployment *how*, and
+> `HISTORY.md` everything that is no longer true — superseded designs, closed issues,
+> dead ends and deleted fixtures. Check `HISTORY.md` before reopening any question here.
+>
+> Nothing specified here is live in a country workspace. Sections marked **BUILT** describe code
+> that exists and has been verified in a sandbox; everything else is a requirement, not a report.
+>
+> **This folder (`docs/wip/`) is destined to become its own repository** (decision D18). It sits
+> inside `snt_development` for now only so that agents working on the pipelines have the context
+> at hand. Write everything here as if the parent repo were not there: no links that only make
+> sense from the parent's layout unless they are marked as such, and machine-readable contracts
+> (such as `docs/status_report.schema.json`) live *inside* this
+> folder, never beside the pipelines. Links that point out of the folder today (to
+> `../../snt_workspace_check/`, `../PIPELINE_README_STANDARD.md`, `../../.github/`) are the ones to
+> revisit at the move.
+
+> Status: work in progress. Manifest generation, the Workspace Manager and Python deployment are
+> built and verified in a sandbox; the verification pipeline is not started. Nothing here is live
+> in a country workspace yet.
+>
+> This document describes the **current** design and state. Superseded designs, closed problems,
+> dead ends and verifications against deleted fixtures are in `HISTORY.md` — read that
+> before re-investigating anything here.
 
 ---
 
@@ -315,7 +375,7 @@ The OpenHEXA workspace `snt-development-sandbox` was **not** reset. It still hol
 `.snt_release` marker naming a tag that no longer exists — harmless, and itself a usable test of how
 the checker handles an unresolvable declared release.
 
-Procedure: `ignore/SNT25-670/sandbox_reset_runbook.md` (local, not committed).
+Procedure: the local runbook `sandbox_reset_runbook.md`, never committed; what still matters of it is in [`sandbox.md`](sandbox.md).
 
 ### 4.2 `v0.0.1-test` and `v0.0.2-test` are retired names
 
@@ -345,8 +405,8 @@ workspace, so there was nothing to archive. That gap is still open.
 | 2026-09-16 | Legacy manifest generator verified; `snt_workspace_manager` v3 proven end to end against `v0.0.1-test`; API deployment mechanism written up. |
 | 2026-09-18 | `product_spec_draft.md` reviewed with Giulia; decisions D1–D9, D11, D12 taken; `PRODUCT_SPEC.md` written. §7.2 (obtaining every manifest) deferred to a dedicated session. Tag-protection ruleset created on the sandbox. |
 | 2026-09-21 | Phase 0: manifest generator rewritten to mirror the SDK's zip rule (107 → 156 files) and given a `pipelines` block; `split_manifest()` fixed in the same change. Sandbox repo reset; fixture releases `v0.1.0-test` … `v0.4.0-test` cut. |
-| 2026-09-22 | `docs/wip/` split: current state in the three live documents, history consolidated here. §7.3a closed by the `snt-token-probe` run (§2.4): a run's own `HEXA_TOKEN` reads pipeline version zips, so the checker is credential-free and **phase 1 is unblocked**. §7.3b (placing the `oh` token in a country workspace) parked as low priority. **Phase 1 built and verified**: `snt_workspace_check` reports 163/163 `match` in the sandbox at `v0.1.0-test` (`PRODUCT_SPEC.md` §6.2). Two defects surfaced on the way — the version-name `[vN]` suffix (§1 above, fixed) and the manager's `DUPLICATE_PIPELINE_VERSION_NAME` on re-deploy (`release_strategy.md`, open). |
-| 2026-09-29 | **Phase 2 built and verified** (`PRODUCT_SPEC.md` §6.3). The checker loads every release's manifest and walks the filesystem; the full taxonomy reported exactly as predicted in the sandbox. That run also found 55 inert filesystem copies left by the pre-fix `split_manifest()` (§2.2), which Giulia deleted by hand. §7.5 closed (report-and-leave). D9 decided (no notebook normalisation), from one real country workspace. §7.8 decided as D14 (spans). `added_after_target` accepted as D13. **§7.2 closed**: manifest downloads are not charged per file, so fetch-all is the design (first measurement attempt failed, §1). Phase-3 handover written (`PRODUCT_SPEC.md` §6.4). Two new blocking decisions for it: §7.10 (what an attribution percentage means) and §7.11 (status name; forcing attribution mode). |
-| 2026-09-30 | Phase 4 done (schema frozen, D18–D20). Phase 5 started with the manager on its own: `sync_analytics`, `deploy_pipelines`, `only_pipelines` and `create_missing` removed (D21); the `DUPLICATE_PIPELINE_VERSION_NAME` re-deploy defect addressed by comparing contents and relabelling unchanged pipelines with the tag (D22). Written and linted, stub-tested offline, **not yet run in a workspace** (`PRODUCT_SPEC.md` §6.7). Recorded as limits to keep in mind: no factory reset, and pipelines dropped by a release remain as strays (§7.5). |
-| 2026-10-01 | Manager: an empty `release_tag` now deploys the latest release (D23), and every failure is logged to the run's Messages as `[ERROR] Cannot deploy: …` (D24). Prompted by a sandbox run that resolved to `v0.4.0-test` and stopped on its missing manifest with no message. Both confirmed in `snt-development-sandbox`; the D21/D22 test plan is still open (`PRODUCT_SPEC.md` §6.7). Working assumption recorded as D25: one workspace per release, so rolling back and forth only has to be safe, not clean (`PRODUCT_SPEC.md` §1.3). |
+| 2026-09-22 | `docs/wip/` split: current state in the three live documents, history consolidated here. §7.3a closed by the `snt-token-probe` run (§2.4): a run's own `HEXA_TOKEN` reads pipeline version zips, so the checker is credential-free and **phase 1 is unblocked**. §7.3b (placing the `oh` token in a country workspace) parked as low priority. **Phase 1 built and verified**: `snt_workspace_check` reports 163/163 `match` in the sandbox at `v0.1.0-test` ([`checker.md`](checker.md) §6.2). Two defects surfaced on the way — the version-name `[vN]` suffix (§1 above, fixed) and the manager's `DUPLICATE_PIPELINE_VERSION_NAME` on re-deploy (`release_strategy.md`, open). |
+| 2026-09-29 | **Phase 2 built and verified** ([`checker.md`](checker.md) §6.3). The checker loads every release's manifest and walks the filesystem; the full taxonomy reported exactly as predicted in the sandbox. That run also found 55 inert filesystem copies left by the pre-fix `split_manifest()` (§2.2), which Giulia deleted by hand. §7.5 closed (report-and-leave). D9 decided (no notebook normalisation), from one real country workspace. §7.8 decided as D14 (spans). `added_after_target` accepted as D13. **§7.2 closed**: manifest downloads are not charged per file, so fetch-all is the design (first measurement attempt failed, §1). Phase-3 handover written ([`checker.md`](checker.md) §6.4). Two new blocking decisions for it: §7.10 (what an attribution percentage means) and §7.11 (status name; forcing attribution mode). |
+| 2026-09-30 | Phase 4 done (schema frozen, D18–D20). Phase 5 started with the manager on its own: `sync_analytics`, `deploy_pipelines`, `only_pipelines` and `create_missing` removed (D21); the `DUPLICATE_PIPELINE_VERSION_NAME` re-deploy defect addressed by comparing contents and relabelling unchanged pipelines with the tag (D22). Written and linted, stub-tested offline, **not yet run in a workspace** ([`deployer.md`](deployer.md) §6.7). Recorded as limits to keep in mind: no factory reset, and pipelines dropped by a release remain as strays (§7.5). |
+| 2026-10-01 | Manager: an empty `release_tag` now deploys the latest release (D23), and every failure is logged to the run's Messages as `[ERROR] Cannot deploy: …` (D24). Prompted by a sandbox run that resolved to `v0.4.0-test` and stopped on its missing manifest with no message. Both confirmed in `snt-development-sandbox`; the D21/D22 test plan is still open ([`deployer.md`](deployer.md) §6.7). Working assumption recorded as D25: one workspace per release, so rolling back and forth only has to be safe, not clean ([`release_strategy.md`](release_strategy.md) §1.3). |
 | 2026-10-01 | Moved to `BLSQ/snt_workspace_bootstrap`, then renamed (M7): `snt_workspace_check` → `snt_workspace_checker`, `snt_workspace_manager` → `snt_workspace_deployer` (Workspace Manager → Workspace Deployer). Entries above keep the names they were written with; the report key `snt_workspace_check_version` stays frozen. |

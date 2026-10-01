@@ -1,0 +1,3197 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-30T08:33:01Z",
+  "snt_workspace_check_version": null,
+  "workspace": "snt-development-sandbox",
+  "repo": "BLSQ/snt_development_sandbox",
+  "mode": "attribution",
+  "target_release": {
+    "tag": null,
+    "resolved_from": "parameter",
+    "published_at": null
+  },
+  "declared_release": {
+    "tag": "v0.3.0-test",
+    "source": ".snt_release"
+  },
+  "releases_considered": [
+    {
+      "tag": "v0.1.0-test",
+      "published_at": "2026-09-21T15:20:03Z",
+      "manifest_available": true
+    },
+    {
+      "tag": "v0.2.0-test",
+      "published_at": "2026-09-21T15:40:37Z",
+      "manifest_available": true
+    },
+    {
+      "tag": "v0.2.1-test",
+      "published_at": "2026-09-21T16:00:44Z",
+      "manifest_available": true
+    },
+    {
+      "tag": "v0.3.0-test",
+      "published_at": "2026-09-21T16:04:03Z",
+      "manifest_available": true
+    },
+    {
+      "tag": "v0.4.0-test",
+      "published_at": "2026-09-21T16:16:07Z",
+      "manifest_available": false
+    }
+  ],
+  "incomplete": true,
+  "summary": {
+    "by_status": {
+      "attributed": 164,
+      "untracked": 1
+    },
+    "attribution": {
+      "files_scored": 164,
+      "rule": "Each release is judged only on the paths it ships. present = files found here at those paths; agreeing = those whose bytes are exactly the release's; extra = files found here at paths it does not ship. agreement = agreeing / present; completeness = present / shipped. Files are every entry for a file present in the workspace, filesystem and pipeline versions together, except `untracked` and `missing`. A file unchanged across releases agrees with each of them, so no column adds up to 1. Best fit: highest agreement, then highest completeness, then newest.",
+      "by_release": [
+        {
+          "tag": "v0.1.0-test",
+          "published_at": "2026-09-21T15:20:03Z",
+          "manifest_available": true,
+          "shipped": 163,
+          "present": 163,
+          "agreeing": 162,
+          "extra": 1,
+          "agreement": 0.9939,
+          "completeness": 1.0
+        },
+        {
+          "tag": "v0.2.0-test",
+          "published_at": "2026-09-21T15:40:37Z",
+          "manifest_available": true,
+          "shipped": 163,
+          "present": 163,
+          "agreeing": 162,
+          "extra": 1,
+          "agreement": 0.9939,
+          "completeness": 1.0
+        },
+        {
+          "tag": "v0.2.1-test",
+          "published_at": "2026-09-21T16:00:44Z",
+          "manifest_available": true,
+          "shipped": 163,
+          "present": 160,
+          "agreeing": 158,
+          "extra": 4,
+          "agreement": 0.9875,
+          "completeness": 0.9816
+        },
+        {
+          "tag": "v0.3.0-test",
+          "published_at": "2026-09-21T16:04:03Z",
+          "manifest_available": true,
+          "shipped": 163,
+          "present": 160,
+          "agreeing": 160,
+          "extra": 4,
+          "agreement": 1.0,
+          "completeness": 0.9816
+        },
+        {
+          "tag": "v0.4.0-test",
+          "published_at": "2026-09-21T16:16:07Z",
+          "manifest_available": false,
+          "shipped": null,
+          "present": null,
+          "agreeing": null,
+          "extra": null,
+          "agreement": null,
+          "completeness": null
+        }
+      ],
+      "best_fit": {
+        "tag": "v0.3.0-test",
+        "agreement": 1.0,
+        "completeness": 0.9816
+      },
+      "matches_no_release": {
+        "count": 0,
+        "share": 0.0
+      },
+      "unreadable": {
+        "count": 0,
+        "share": 0.0
+      }
+    }
+  },
+  "pipelines": [
+    {
+      "pipeline": "snt_assemble_results",
+      "code": "snt-assemble-results",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_extract",
+      "code": "snt-dhis2-extract",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v2]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_formatting",
+      "code": "snt-dhis2-formatting",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_incidence",
+      "code": "snt-dhis2-incidence",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_outliers_imputation_iqr",
+      "code": "snt-dhis2-outliers-imputation-iqr",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_outliers_imputation_magic_glasses",
+      "code": "snt-dhis2-outliers-imputation-magic-glasses",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_outliers_imputation_mean",
+      "code": "snt-dhis2-outliers-imputation-mean",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_outliers_imputation_median",
+      "code": "snt-dhis2-outliers-imputation-median",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_outliers_imputation_path",
+      "code": "snt-dhis2-outliers-imputation-path",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_population_transformation",
+      "code": "snt-dhis2-population-transformation",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.3.0-test [v2]",
+      "current_version_claims_tag": "v0.3.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_quality_of_care",
+      "code": "snt-dhis2-quality-of-care",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_reporting_rate_dataelement",
+      "code": "snt-dhis2-reporting-rate-dataelement",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhis2_reporting_rate_dataset",
+      "code": "snt-dhis2-reporting-rate-dataset",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_dhs_indicators",
+      "code": "snt-dhs-indicators",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_era5_climate_data",
+      "code": "snt-era5-climate-data",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_fixture_pipeline_removed",
+      "code": "snt-fixture-pipeline-removed",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_healthcare_access",
+      "code": "snt-healthcare-access",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_map_extracts",
+      "code": "snt-map-extracts",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_seasonality_cases",
+      "code": "snt-seasonality-cases",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_seasonality_rainfall",
+      "code": "snt-seasonality-rainfall",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_workspace_manager",
+      "code": "snt-workspace-manager",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v8",
+      "current_version_claims_tag": "v8",
+      "version_name_matches_content": null,
+      "remediation": null
+    },
+    {
+      "pipeline": "snt_worldpop_extract",
+      "code": "snt-worldpop-extract",
+      "in_target": null,
+      "in_any_release": true,
+      "current_version_name": "v0.1.0-test [v1]",
+      "current_version_claims_tag": "v0.1.0-test",
+      "version_name_matches_content": true,
+      "remediation": null
+    },
+    {
+      "pipeline": null,
+      "code": "snt-workspace-check",
+      "in_target": null,
+      "in_any_release": false,
+      "current_version_name": "v9",
+      "current_version_claims_tag": "v9",
+      "version_name_matches_content": null,
+      "remediation": "No release describes this pipeline. Reported for completeness only; its contents are not read."
+    }
+  ],
+  "entries": [
+    {
+      "path": "code/fixture_changing.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "3b5a0ad8b01599dda8f9f25e14e29ed625fd6556df04c03a221f5d64ebea4fde",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.3.0-test",
+          "to": "v0.3.0-test",
+          "count": 1
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "code/fixture_removed.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "edcb14f0d16abaf293ffdb8b774bb86d8cf083f964eadaf7ae2642436c928f9c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.2.0-test",
+          "count": 2
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "code/fixture_stable.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "83cf1dd56fa0920b65692487d30eca1260e7c16cab31dcd1471b08bcbc11919f",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "code/snt_palettes.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "b7d27aaa6147b8b615543a69d33abc1b678bb86c45b2e9e90b922bc17b418a06",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "code/snt_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "10b13ac9ce9a910c84de7b8bbe5a67d437012d28bddccd2a04ae6a3544b2b2f9",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "code/snt_utils.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "01538a52fedfd31c88f0d2ee08c9de635f7db74d098ede82cc17b6b3424cbd8f",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_extract/code/NER_pyramid_format.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "261b5c502d12331eeb0cd73e0bff79e6263c7d5922606c9beb29229927351e83",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_extract/reporting/snt_dhis2_extract_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "3977af1496e52fd1c9b6bbe826206574972501e60c340a3d028f6b759029f432",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_extract/utils/snt_dhis2_extract_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "3b7dcc73e3b9d761a7e24ac1d7a082127c180eb217054e235c3a3f937a1ad041",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_formatting/code/snt_dhis2_formatting_population.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "b415505562ec3ba62e0b74ae559ab91c1fb065798716530dd15c6a0b8f9d465c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_formatting/code/snt_dhis2_formatting_pyramid.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "f814767e84e80c72ea8a17f85b65afa29d0eba1ddd492a83a8cb6d0f9db22830",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_formatting/code/snt_dhis2_formatting_reporting_rates.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "00d7a447eeff8625571bc658fe99ef1f8314a7bb8fbbec694919f37c464c5fd0",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_formatting/code/snt_dhis2_formatting_routine.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "67b1fad343a53e7386c5a8435ed1550166f85d26261afc6934d520390f5aecc7",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_formatting/code/snt_dhis2_formatting_shapes.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "8a78000f3cdee5923ec7f14e9cc1c90701e6305b72aef66c9c66a16678d83872",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_formatting/reporting/snt_dhis2_formatting_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "461aee1edeeac724d273e530303861056eae7c0c9aa711bd5d8ff46cb47d50e2",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_formatting/utils/snt_dhis2_formatting.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "0dfb6f70a4194f82d738b7efb94aa25408ca23407e7cd19406ff93926552dca2",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_formatting/utils/snt_dhis2_formatting_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "6d2f7f7bf5e7f64e937672f3914d29e12caeced02775a7b5f159aaf06aeeca2a",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_incidence/code/snt_dhis2_incidence.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "5f1b7da5e8963d6f5c56c7a53daf759211ce7dfd6ddcb7f1dc4c78b9c47b98ea",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_incidence/reporting/snt_dhis2_incidence_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "24acdb5b14d66da11de4502c3da3926958c3f789e03ac134ae4ffe2d76a1b257",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_incidence/utils/fixture_added.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "03ae4b1b8ab80a363f838bbceb7e87691a6115882e7cd90d64f8d85ec290bd2b",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.2.1-test",
+          "to": "v0.3.0-test",
+          "count": 2
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_incidence/utils/snt_dhis2_incidence.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "e57b9985282039684ac3cf0e0c37e92bd42878afcf4112a62fc640aef44013f7",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_iqr/code/snt_dhis2_outliers_imputation_iqr.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "2842d2b3f4323c6163805957c382c949e5874c78e6f9720b213a747c4aefd579",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_iqr/reporting/snt_dhis2_outliers_imputation_iqr_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "ff7971eecdfdd0ec92039fba2b5b2d768b61f368affbf5b5d49687604d97555d",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_iqr/utils/snt_dhis2_outliers_imputation_iqr.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "48831f74cbe27bf655cb2ba8ac888d659008db8c7fb0317e3582dabd0dab390f",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_iqr/utils/snt_dhis2_outliers_imputation_iqr_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "520ff3d831720f854a732b2cdde8d0c506ffef832384f8a8f23ac8823f365cb5",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_magic_glasses/code/snt_dhis2_outliers_imputation_magic_glasses.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "2b5d5befa552aa05f811fca59ae322f8c26e4f69e2f35a7230bd5e68301f1c11",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_magic_glasses/reporting/snt_dhis2_outliers_imputation_magic_glasses_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "d3fa308b869d206f70fd7b2b05f57dd816791587799c856fa7c63ccc433dc66e",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_magic_glasses/utils/snt_dhis2_outliers_imputation_magic_glasses.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "f3079bf566b13344eefc8c08900adb3aeac58130b6934644e41842777e0b9477",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_magic_glasses/utils/snt_dhis2_outliers_imputation_magic_glasses_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "2909ed5f7f9f1db36a8065126522af83519a9f644115a675da07014c7a7ab180",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_mean/code/snt_dhis2_outliers_imputation_mean.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "d6796e0b9177d5cf622365977ee54a73eff3f4a93c25520e36b43ae27961668f",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_mean/reporting/snt_dhis2_outliers_imputation_mean_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "db0c8fd030d52a7c1cdcef0824ef20c33d074ba26c57462ee54c868d41c8612a",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_mean/utils/snt_dhis2_outliers_imputation_mean.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "8780867acedd6e0f7c80da8b284c5616a9e74cc5f483d9f311ee1ecc79e4d5ef",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_mean/utils/snt_dhis2_outliers_imputation_mean_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "eba8344703eb5646511661a2e6e1672ff24f331fed355ba332602311b0a9daf0",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_median/code/snt_dhis2_outliers_imputation_median.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "8224c25296f5a3e95cb1dd43f2edfbe5b9f99488b17a8636e379945e75e33d62",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_median/reporting/snt_dhis2_outliers_imputation_median_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "2d067b2322067a8136215f9dd8a5bb6777fa1b9fe90e3d858291bd1b0448f13f",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_median/utils/snt_dhis2_outliers_imputation_median.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "0ce02aa9ed379dbce979ac1498a18063a1499aace354b973096baec0bc2c74ee",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_median/utils/snt_dhis2_outliers_imputation_median_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "25503951e20ef5a0d10ba87a6bccfde2bbf27248f519818d3a6ee919583d211f",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_path/code/snt_dhis2_outliers_imputation_path.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "b66c318dcca438ab8d4a39f449c0b39156b92161aadb585d956ef4a0e8de9f3d",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_path/reporting/snt_dhis2_outliers_imputation_path_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "53cd07901e3cb5f763168d2e6b06341a208c585b0adaf3cc8022f8b74020f5cd",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_outliers_imputation_path/utils/snt_dhis2_outliers_imputation_path.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "3b7e1d861e4e35c815f9c1add4e5047b8304f4a4ad504bd0f04ebb14a88f6acf",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_population_transformation/code/snt_dhis2_population_transformation.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "ff2f8c585ead623b661f5ba086bc144042d0f62afdd3a63fb6cddbcf5f35a57c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_population_transformation/reporting/snt_dhis2_population_transformation_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "b7fb68c46e33212ea66123aadcc5d07e1de3fc4e3e3deb5e1fd53ee77f56916e",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_population_transformation/utils/snt_dhis2_population_transformation.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "33368235b8a75cdb2ffd77ef97584f9669bf1bc269cd7af7b579c7e5fd01b15a",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_population_transformation/utils/snt_dhis2_population_transformation_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "2519515747e3c2c7e80659470eae40400f933cc7bc75bbd3051733c7b728e66f",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_quality_of_care/code/snt_dhis2_quality_of_care.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "4866ecab0675609bd47ae8b64e555646fc34831b16dc339f95fd26bcf042b8cb",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_quality_of_care/reporting/snt_dhis2_quality_of_care_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "133a33887a5f197e06a9615b77556a1c98a4f271004d1f539f29ba908ebd1469",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_quality_of_care/utils/snt_dhis2_quality_of_care.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "253604605e64761b0ca87db80ea89152a7aaf744623da0281f107b07a2b90714",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_quality_of_care/utils/snt_dhis2_quality_of_care_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "b6dc66ddf6e2d2ccb848fdf315d9d66adec8bd9c181e06a2f8dbb0731b7fc08a",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_reporting_rate_dataelement/code/snt_dhis2_reporting_rate_dataelement.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "1f37c04d9cca9d4fc0e7b4be69811f91caf40db5f6247ed4fb731cec8c330112",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_reporting_rate_dataelement/reporting/snt_dhis2_reporting_rate_dataelement_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "4b31cfdcc795fc753a5c9076cbf3b82651af68a6d7310ee458eca4ab1cb871c6",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_reporting_rate_dataelement/utils/snt_dhis2_reporting_rate_dataelement_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "76f9b2c8607941f59b4c35a7d81051ed898d3b1d1a783606bec93bd606b22bc9",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_reporting_rate_dataset/code/snt_dhis2_reporting_rate_dataset.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "ed992fcd36c07b949be9066d325a4dfa55835a40c098a1f764c478cd1e66bf31",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhis2_reporting_rate_dataset/reporting/snt_dhis2_reporting_rate_dataset_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "b5023793e78c4d535758bd67e47618915a7d6ee4b2a5b85809a3d6c90affd01c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/code/snt_dhs_bednets_computation.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "515e228e077db94c5aafa3376bdf4f5c725dfb0cfaa65de41117480780c2e467",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/code/snt_dhs_careseeking_computation.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "84edc256239d01a503a78f3487c69d2a87f593711f89b936b92640746d1dd806",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/code/snt_dhs_mortality_computation.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "d575719d2d501659a8da47fc0f92cbaf6ffbb25878ad6e6352292f43995315db",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/code/snt_dhs_prevalence_computation.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "d22afd4d50e354ba953dbf0eb39f56a38c7773e029077f3295333e2c4118d5ae",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/code/snt_dhs_vaccination_computation.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "5c564ba47e7a5a52a4be5802b1bdcded4f4b36caa2d1ff1bcb5242028cba9cd8",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/reporting/snt_dhs_bednets_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "5a8bce539a449610684307f645b74990d1d1de770c165350641cd1976f3590f2",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/reporting/snt_dhs_careseeking_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "0db49fd78246ddf7cd632cf84891f9e9c700394958889ac79215ab409cf59f93",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/reporting/snt_dhs_mortality_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "6bb005b0328954827ab00906dd51560637b3ecd39f8da89d2bb763683f68045b",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/reporting/snt_dhs_prevalence_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "c978a118aae0dc9e7eed306eb99184271628f588c12197274fb6b90b145f9296",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/reporting/snt_dhs_vaccination_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "fa93a64edcae8a155a6ecb61c5bd8394662c42adc45bd0c00b7a5d5f78187836",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_bednets_computation.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "5279ca4e71139958e79fd8b604f0a46e3c059c7d9db04788dae226a254fae59b",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_bednets_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "d92a1239fc235c2e5e749d22d847e39fa6f3bfd68c44131b3b661f307729800d",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_careseeking_computation.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "035a07ebba1d54687492903fe49abda092d6d51a678470bf00c93a1567ea77be",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_careseeking_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "16b7505af1d3983c057f20045eb32d8eb1b949ca50a096bf80334c3f5e95cd94",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_indicator_tables.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "abf989c88397fbe7532b2a70700fd54ee395f2e21d9d6cd8945ea0ee329999a3",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_mortality_computation.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "def700645ecfb80bcbda8eb5fe8c2ed9b0a8c59b409b1c9ae330d495b3817f01",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_mortality_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "bcfaacf15912c561480c7a57370193d1aabbcf908de82d6f8a26347af2789435",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_prevalence_computation.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "84dc064a83a1336118d8c0f797ac611d3d9dbbfa81a4f91703c200444d7cf68e",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_prevalence_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "3a2ecec0e1d5274fdeefac69679a12c8255c175f662cabd373ed3a4eeb8d5124",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_vaccination_computation.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "a54b8eea15107125051a80fac6ea7d24ca3c537969643ceed586edbbd1f30540",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_dhs_indicators/utils/snt_dhs_vaccination_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "a9aa4c8c8a3f20d2c2480a0ada753861c33574b05e1346407fbc3754541d5df5",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_era5_climate_data/reporting/snt_era5_climate_data_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "c7174bbc2fab00646f6dad4cade6e2da3184e18c3505c8a3869349fa70b5e82a",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_healthcare_access/code/snt_healthcare_access.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "84c876e418a52179d80906c4a7564182aa7a71faf46872fa26e43f464be961c3",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_healthcare_access/reporting/snt_healthcare_access_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "5be2853b2e0bacaed6006c1f74d602167335b83216a20c141e35bb0a4756d03a",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_healthcare_access/utils/snt_healthcare_access.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "cf017fa703e23c206df597cdb5e145cb74c285cf78340bd776b47f4f35e2c44b",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_healthcare_access/utils/snt_healthcare_access_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "0063dfe3bce3f0e111f69e781fefd03f00bb2e23201ee1b3f9f214979bc86b0b",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_map_extracts/reporting/snt_map_extracts_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "7f8488078602069fdc0c32df2d89c81a94eb7dabed746b5ec203a75d546331fb",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_map_extracts/utils/snt_map_extracts_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "63bf4d9b527f94eb626d41a5678dec7b9c2ea41138f09dd17c291d6e33d66ff7",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_seasonality_cases/code/snt_seasonality_cases.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "88cfa279d9565659ce1cd4a9f58101c920659e033c1778b1e5543b3852c027fb",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_seasonality_cases/reporting/snt_seasonality_cases_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "107d20ebb7f253985226d0ab2df95c95d259f086f2636b94115f3625134872c8",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_seasonality_cases/utils/snt_seasonality_cases.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "e41939501bb2139016c0089f780c96936b5245462bfe475dda8cb9219c119620",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_seasonality_rainfall/code/snt_seasonality_rainfall.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "38a02902e68f817a2de411a7d201927de3a2d9cf62ee82b168804b3be27e77f9",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_seasonality_rainfall/code/snt_seasonality_rainfall_NER.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "18b58f75be6317438615066062497f4064eb17a4bcc13bddab05609f49a296fb",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_seasonality_rainfall/reporting/snt_seasonality_rainfall_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "901b82910e144c700a1f8b48c76098c9d941a384d753dd912d27428fe9779d18",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_seasonality_rainfall/utils/snt_seasonality_rainfall.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "249549eefc828d5f94256af8cab37782786cf1db287a3f8ad3a691254539a6c8",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_worldpop_extract/reporting/snt_worldpop_extract_report.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "f581961ad992f76f295e6fbb5a540e81a96a0fcae18399bebed5450d3fa1c5e4",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "pipelines/snt_worldpop_extract/utils/snt_worldpop_extract_report.r",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "attributed",
+      "observed_sha256": "3611dfb1795f62855ae05fb68d50713f34b1bfea9c3155bcedcf288f27f46170",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "scratch_notes.ipynb",
+      "source": "filesystem",
+      "pipeline": null,
+      "status": "untracked",
+      "observed_sha256": null,
+      "target_sha256": null,
+      "matching_releases": null,
+      "position": null,
+      "remediation": "No release has ever shipped a file at this path. Reported for completeness only; the release process has no opinion about it."
+    },
+    {
+      "path": "snt_assemble_results/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_assemble_results",
+      "status": "attributed",
+      "observed_sha256": "c624b6e14d415fb21d42611ec488e235be4b49c8e73495cd6deedcfd89e93206",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_assemble_results/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_assemble_results",
+      "status": "attributed",
+      "observed_sha256": "18fdda965bb52bedc0a34bf25a586ea33d96dc0982f88598eb4c2b12009b4dd2",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_assemble_results/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_assemble_results",
+      "status": "attributed",
+      "observed_sha256": "daed669dea76062db7293851864d406cd90c8ffc94fff67cc584ce0ca1d189dd",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_extract/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_extract",
+      "status": "attributed",
+      "observed_sha256": "44290bd975921879a7505d2501ba6365b40f6e2c69e82b5e6d0199f2d77755cd",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_extract/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_extract",
+      "status": "attributed",
+      "observed_sha256": "ce34aafac8dea81135619c30bd60257408694c3c5a64bee4990885f1475904d4",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_extract/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_extract",
+      "status": "attributed",
+      "observed_sha256": "daed669dea76062db7293851864d406cd90c8ffc94fff67cc584ce0ca1d189dd",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_formatting/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_formatting",
+      "status": "attributed",
+      "observed_sha256": "aeffaf3b6229009b30760b831ddfbe583d7d4c26ac569829ac300a81b487039a",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_formatting/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_formatting",
+      "status": "attributed",
+      "observed_sha256": "3af80b5f236a401ae6b2d38ab1bc5b9f4419adfb926a27b038b14600442e6eb5",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_formatting/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_formatting",
+      "status": "attributed",
+      "observed_sha256": "daed669dea76062db7293851864d406cd90c8ffc94fff67cc584ce0ca1d189dd",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_incidence/fixture_reverted.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_incidence",
+      "status": "attributed",
+      "observed_sha256": "ba3258c0aa5729dd8c5f1bf23b14bde1c609f27b8f28a067cb13c808321d124e",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.2.0-test",
+          "count": 2
+        },
+        {
+          "from": "v0.3.0-test",
+          "to": "v0.3.0-test",
+          "count": 1
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_incidence/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_incidence",
+      "status": "attributed",
+      "observed_sha256": "f58e1e4726d88f1f8579f1de5f11fe8f410c7bcc206b659b8c8e95e2bc18278c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_incidence/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_incidence",
+      "status": "attributed",
+      "observed_sha256": "b0d3455aee40040a25c575ab52cca9448b34a6da6457cad1f12a3abd9cba4281",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_incidence/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_incidence",
+      "status": "attributed",
+      "observed_sha256": "3c955495154eb1ca13294c91f24cba2a938944259142d5714f96ed3ffc4b014c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_iqr/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_iqr",
+      "status": "attributed",
+      "observed_sha256": "2836af617e69413c5f242475b8b674d9262b320eb1612bfc6c1b03d0ad10278f",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_iqr/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_iqr",
+      "status": "attributed",
+      "observed_sha256": "56b4183c6f2ba80bab31468ab3d988adfa9adcb2e264c89f576197f996f2d387",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_iqr/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_iqr",
+      "status": "attributed",
+      "observed_sha256": "b3ad9ff9f35e2e4a4e0a050239cfbbd6a81b341210ffd1ac9261d4393792a937",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_magic_glasses/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_magic_glasses",
+      "status": "attributed",
+      "observed_sha256": "e0703467c04f52a98358b6027a1d8e0c9adeefa0a014d4d9e5da5b3bab50c8d7",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_magic_glasses/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_magic_glasses",
+      "status": "attributed",
+      "observed_sha256": "887290daf5b40dbcc67c599859550907e7785bcd30a90fffad90454b5caddea9",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_magic_glasses/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_magic_glasses",
+      "status": "attributed",
+      "observed_sha256": "b3ad9ff9f35e2e4a4e0a050239cfbbd6a81b341210ffd1ac9261d4393792a937",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_mean/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_mean",
+      "status": "attributed",
+      "observed_sha256": "dd7e50a4012721ae9a752180cf6df69784b193d47a7fb195a9bd8e1b55fd43b7",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_mean/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_mean",
+      "status": "attributed",
+      "observed_sha256": "e0bfddece420d641613425380e48b26928e89029f8b50beeae28f4d105eedefc",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_mean/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_mean",
+      "status": "attributed",
+      "observed_sha256": "b3ad9ff9f35e2e4a4e0a050239cfbbd6a81b341210ffd1ac9261d4393792a937",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_median/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_median",
+      "status": "attributed",
+      "observed_sha256": "a80f633079d3fb7714cd782dbb77de680b6293573958bcb68c46c61f011f65ad",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_median/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_median",
+      "status": "attributed",
+      "observed_sha256": "2817b8d7a128b5eca8d6a6c0e2bf736fd424924863c091cd3c4a5ace7bd09ba6",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_median/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_median",
+      "status": "attributed",
+      "observed_sha256": "b3ad9ff9f35e2e4a4e0a050239cfbbd6a81b341210ffd1ac9261d4393792a937",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_path/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_path",
+      "status": "attributed",
+      "observed_sha256": "1293efadc6bc8ea8554554c10bccb150f105d785fbf901815943f5b69fa08b9a",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_path/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_path",
+      "status": "attributed",
+      "observed_sha256": "47547883fb2bbcd02c46443ddafa7ca00825ceb713c84d14a3b057c4880f0705",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_outliers_imputation_path/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_outliers_imputation_path",
+      "status": "attributed",
+      "observed_sha256": "b3ad9ff9f35e2e4a4e0a050239cfbbd6a81b341210ffd1ac9261d4393792a937",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_population_transformation/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_population_transformation",
+      "status": "attributed",
+      "observed_sha256": "94729e929a6ad48116820ad9906ae71bc57a9f67648f02972876aa35c3300aed",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_population_transformation/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_population_transformation",
+      "status": "attributed",
+      "observed_sha256": "3a6fd469762aa3d6d4a74212a782ae26aeb34a12025b4081ced9a6c5cca6c6c7",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_population_transformation/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_population_transformation",
+      "status": "attributed",
+      "observed_sha256": "daed669dea76062db7293851864d406cd90c8ffc94fff67cc584ce0ca1d189dd",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_quality_of_care/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_quality_of_care",
+      "status": "attributed",
+      "observed_sha256": "a95afe55c16ea1d51171ae29f41052cc24c54303afb70e2746d229e7fff1c1e7",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_quality_of_care/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_quality_of_care",
+      "status": "attributed",
+      "observed_sha256": "c5dc18636db3bf725e1229a8dc3900acfea89dad233b4b7f5d3271e59854fedf",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_quality_of_care/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_quality_of_care",
+      "status": "attributed",
+      "observed_sha256": "b3ad9ff9f35e2e4a4e0a050239cfbbd6a81b341210ffd1ac9261d4393792a937",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_reporting_rate_dataelement/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_reporting_rate_dataelement",
+      "status": "attributed",
+      "observed_sha256": "325c8fe45c74c59a7e0ff77d80ef57171aac16d6e2df0e3dd2c13ee46994a4a7",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_reporting_rate_dataelement/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_reporting_rate_dataelement",
+      "status": "attributed",
+      "observed_sha256": "68bdfc8a80f4c62b4fa5b9e2a7f165f10ce8af5c53b1d8fe7bcce6cb5f2a463a",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_reporting_rate_dataelement/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_reporting_rate_dataelement",
+      "status": "attributed",
+      "observed_sha256": "3c955495154eb1ca13294c91f24cba2a938944259142d5714f96ed3ffc4b014c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_reporting_rate_dataset/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_reporting_rate_dataset",
+      "status": "attributed",
+      "observed_sha256": "da7b3fa0db3a613e6b7424b559093d3725b8ca21cab1db85198a35d867483006",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_reporting_rate_dataset/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_reporting_rate_dataset",
+      "status": "attributed",
+      "observed_sha256": "1aa3a46fba436d4ab2397c9474ca2f648e7b61446e827e04a6d7ba861f82f945",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhis2_reporting_rate_dataset/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhis2_reporting_rate_dataset",
+      "status": "attributed",
+      "observed_sha256": "3c955495154eb1ca13294c91f24cba2a938944259142d5714f96ed3ffc4b014c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhs_indicators/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhs_indicators",
+      "status": "attributed",
+      "observed_sha256": "b5fe6f1ab91beb65265330c59f22a2415803b758e061dbfac8eff2bf316ae009",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhs_indicators/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhs_indicators",
+      "status": "attributed",
+      "observed_sha256": "80eaa4e0e4b8fb92e4f17b5e2fc60151e1ce1c366817372cd45182ca5d08c6be",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_dhs_indicators/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_dhs_indicators",
+      "status": "attributed",
+      "observed_sha256": "3c955495154eb1ca13294c91f24cba2a938944259142d5714f96ed3ffc4b014c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_era5_climate_data/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_era5_climate_data",
+      "status": "attributed",
+      "observed_sha256": "e9d768bc417ef51782621c3eff14200e9fb4f08701be0fb9c0a6cdb457021394",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_era5_climate_data/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_era5_climate_data",
+      "status": "attributed",
+      "observed_sha256": "d8187ea0188c0a8cf9e707612a180b335b0504ca0c94d384b35d59bb28ac9ced",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_era5_climate_data/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_era5_climate_data",
+      "status": "attributed",
+      "observed_sha256": "f35a1d33e94a1075ddaca14ad47abd982baf6c970caba612197c270206a5a162",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_fixture_pipeline_removed/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_fixture_pipeline_removed",
+      "status": "attributed",
+      "observed_sha256": "a302372211cec71f4e30b387cd5e7a36f4c59ebcc03df48c7e42dadf76b71ef6",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.2.0-test",
+          "count": 2
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_fixture_pipeline_removed/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_fixture_pipeline_removed",
+      "status": "attributed",
+      "observed_sha256": "b1b3515e00fbd532939bae7963188fd60ae4e01c83931dc45819f0f11fb64ded",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.2.0-test",
+          "count": 2
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_fixture_pipeline_removed/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_fixture_pipeline_removed",
+      "status": "attributed",
+      "observed_sha256": "51dddac20f74c25b97403c63f39e3f293208ef5bc987056e892897fdb6bd45de",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.2.0-test",
+          "count": 2
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_healthcare_access/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_healthcare_access",
+      "status": "attributed",
+      "observed_sha256": "9f03631dfcf1f147e9e4fb27f64342999104bfb43de6637f5f906bffe8bfa9a9",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_healthcare_access/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_healthcare_access",
+      "status": "attributed",
+      "observed_sha256": "4c7afcacb2339a137c2276130a3774fb29ab12218d193d8220807b8043172b78",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_healthcare_access/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_healthcare_access",
+      "status": "attributed",
+      "observed_sha256": "3c955495154eb1ca13294c91f24cba2a938944259142d5714f96ed3ffc4b014c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_healthcare_access/worldpopclient.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_healthcare_access",
+      "status": "attributed",
+      "observed_sha256": "5c48ecd00445c620f43af9103b4c9ce4009a188482a7b23c6cf0f992929e1ba3",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_map_extracts/malariaAtlasProject/__init__.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_map_extracts",
+      "status": "attributed",
+      "observed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_map_extracts/malariaAtlasProject/map.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_map_extracts",
+      "status": "attributed",
+      "observed_sha256": "f4d676a94841239468b3ad9870bc779a75aeead04472c34197300b32e251d67b",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_map_extracts/malariaAtlasProject/map_utils.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_map_extracts",
+      "status": "attributed",
+      "observed_sha256": "7af44227be41b8d2197ab974ee37e8b693f2768f8060c94fa399ffe2b82a4b67",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_map_extracts/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_map_extracts",
+      "status": "attributed",
+      "observed_sha256": "02c62b1df010a22d855ee3ae375943c85a02f41f50cc90d4e6bae32e76d07c93",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_map_extracts/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_map_extracts",
+      "status": "attributed",
+      "observed_sha256": "73b18b88e9647af7a540a221a4c0d5bc35688be4294eebc5619d0ee8e31213cc",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_map_extracts/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_map_extracts",
+      "status": "attributed",
+      "observed_sha256": "b12380c79d5b95f2e579d363dc26df13e6d4659ec121688a36bd842d889feb63",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_map_extracts/utils.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_map_extracts",
+      "status": "attributed",
+      "observed_sha256": "a30578ee8a1e2214f8b00e174bc967ba41d8f68c956bcfb814abf71e6d686638",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_map_extracts/worldpopclient.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_map_extracts",
+      "status": "attributed",
+      "observed_sha256": "70c9a622db6bafae1ed290395b012cb4ee5b4e9434307749d72b85041aed4a53",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_seasonality_cases/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_seasonality_cases",
+      "status": "attributed",
+      "observed_sha256": "a83e8fc95cd32a999d33d6d2aae1b87f324ce98fdd86138b32449c25421da6b2",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_seasonality_cases/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_seasonality_cases",
+      "status": "attributed",
+      "observed_sha256": "330ae38830be46e259eca3ec2d9f8dc446550113ec1ce50b60e044a38021afd2",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_seasonality_cases/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_seasonality_cases",
+      "status": "attributed",
+      "observed_sha256": "daed669dea76062db7293851864d406cd90c8ffc94fff67cc584ce0ca1d189dd",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_seasonality_rainfall/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_seasonality_rainfall",
+      "status": "attributed",
+      "observed_sha256": "6ec6d9a8aa5568759da64e2758e6dd2100b3aab98b52f52c0e868cdf9fa8a65c",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_seasonality_rainfall/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_seasonality_rainfall",
+      "status": "attributed",
+      "observed_sha256": "a7c05d15dc8cdfed4cee741f7de13360e3f69987d47cec1ee0d5ca8ae1489155",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_seasonality_rainfall/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_seasonality_rainfall",
+      "status": "attributed",
+      "observed_sha256": "daed669dea76062db7293851864d406cd90c8ffc94fff67cc584ce0ca1d189dd",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_workspace_manager/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_workspace_manager",
+      "status": "attributed",
+      "observed_sha256": "df6532149a5224a480e865c67342b8c116138d03d6a461a5e671189169e2ce00",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_workspace_manager/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_workspace_manager",
+      "status": "attributed",
+      "observed_sha256": "318b0605f90a80b8b2c17f377967ef03eac9aa7895c314263a52b76f6da80ba4",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_workspace_manager/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_workspace_manager",
+      "status": "attributed",
+      "observed_sha256": "7cc4959877dbe6b6c63a8eb1bfe3bfb545fa8fe5b28b1b2c13e4a7c1c0d1c4d4",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_worldpop_extract/pipeline.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_worldpop_extract",
+      "status": "attributed",
+      "observed_sha256": "580c125a8492b961f076bf238af049583d3aa23262d65373e4e715daeeb7b8f4",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_worldpop_extract/readme.md",
+      "source": "pipeline_version",
+      "pipeline": "snt_worldpop_extract",
+      "status": "attributed",
+      "observed_sha256": "2d6e5830a338ff6582895fa1d8178f9a2c23dc2a307a017e83cf1b3a46b6e4ad",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_worldpop_extract/requirements.txt",
+      "source": "pipeline_version",
+      "pipeline": "snt_worldpop_extract",
+      "status": "attributed",
+      "observed_sha256": "23588d118704bffe0e7aaac3cb85120d45720f750e217519306fb3dcf8dbe876",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    },
+    {
+      "path": "snt_worldpop_extract/worldpopclient.py",
+      "source": "pipeline_version",
+      "pipeline": "snt_worldpop_extract",
+      "status": "attributed",
+      "observed_sha256": "70c9a622db6bafae1ed290395b012cb4ee5b4e9434307749d72b85041aed4a53",
+      "target_sha256": null,
+      "matching_releases": [
+        {
+          "from": "v0.1.0-test",
+          "to": "v0.3.0-test",
+          "count": 4
+        }
+      ],
+      "position": null,
+      "remediation": null
+    }
+  ],
+  "inert_filesystem_copies": [],
+  "scan_exclusions": {
+    "top_level_directories": [
+      "archive",
+      "configuration",
+      "data",
+      "snt_status"
+    ],
+    "directories_at_any_depth": [
+      "papermill_outputs",
+      "any directory whose name starts with '.'"
+    ],
+    "subpaths": [
+      "reporting/outputs"
+    ],
+    "root_files": [
+      ".snt_release"
+    ]
+  },
+  "errors": [
+    {
+      "scope": "manifest:v0.4.0-test",
+      "message": "Release v0.4.0-test: it has no release_manifest.json asset, so it cannot be compared against. Files only it shipped may be reported as untracked or unknown_content."
+    }
+  ],
+  "blind_spots": [
+    "In verification mode, matching_releases is carried only on entries that are not `match` (decision D14); summary.attribution still counts every file.",
+    "Files on the filesystem inside a pipeline directory never execute; they are listed in inert_filesystem_copies, not classified.",
+    "Pipelines no release describes are named in `pipelines`, but their contents are not read.",
+    "The directories and files in scan_exclusions were not scanned.",
+    "Notebooks are compared as raw bytes (decision D9): a metadata-only change, such as a different kernel name, reads as unknown_content.",
+    "OpenHEXA web apps, configuration/ and data/ are out of scope by decision.",
+    "Country-specific notebook variants are not recognised as deliberate overrides."
+  ]
+}

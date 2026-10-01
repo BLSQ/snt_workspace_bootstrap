@@ -2,9 +2,9 @@
 
 Read-only. This pipeline writes its own report and nothing else - it never deletes, moves,
 overwrites, deploys or archives. `snt_workspace_deployer` is the only component that changes
-workspace state (docs/wip/PRODUCT_SPEC.md section 5.4).
+workspace state (docs/checker.md section 5.4).
 
-Phase 4 of the build plan (PRODUCT_SPEC.md section 6). Two modes (decision D11):
+Phase 4 of the build plan (docs/checker.md section 6). Two modes (decision D11):
 
     verification  a target release is given: every file gets a verdict relative to it, judged
                   in the light of EVERY release's manifest, with the full status taxonomy
@@ -16,7 +16,7 @@ Both modes carry the coverage summary; attribution mode is verification without 
 Every release's manifest is fetched on each run. The release list is ONE GitHub API request
 (per_page=100), and the manifests are downloaded from `browser_download_url` on github.com,
 not from api.github.com - measured 2026-09-29 not to be charged per download, so a run costs
-about one API request whatever the release count (PRODUCT_SPEC.md section 7.2, closed).
+about one API request whatever the release count (docs/checker.md section 7.2, closed).
 
 Two sources are hashed, and each tracked path is routed to exactly ONE of them:
 
@@ -29,7 +29,7 @@ from the bucket - so it is listed in `inert_filesystem_copies` and not classifie
 it as evidence would report a file as fine on the strength of bytes that never execute.
 
 Credentials: none. A run's own HEXA_TOKEN reads `currentVersion.zipfile` in full, established
-by the snt-token-probe run of 2026-09-22 (docs/wip/HISTORY.md section 2.4). The checker can
+by the snt-token-probe run of 2026-09-22 (docs/HISTORY.md section 2.4). The checker can
 therefore run unattended in a country workspace holding no connection at all.
 """
 
@@ -48,7 +48,7 @@ import requests
 from openhexa.sdk import current_run, parameter, pipeline, workspace
 
 # Bumped only when the report shape changes in a way a consumer must notice. v1 was frozen at
-# phase 4; the contract is docs/wip/docs/status_report.schema.json.
+# phase 4; the contract is docs/contracts/status_report.schema.json.
 SCHEMA_VERSION = 1
 
 REPORT_DIR_NAME = "snt_status"
@@ -65,14 +65,14 @@ GITHUB_HEADERS = {"User-Agent": "snt-workspace-checker"}
 GITHUB_PAGE_SIZE = 100
 
 # The OpenHEXA SDK's zip rule, mirrored from generate_zip_file() in openhexa/cli/api.py - the
-# same constants the manifest generator mirrors (release_strategy.md, "Manifest generation").
+# same constants the manifest generator mirrors (docs/contracts/release_manifest.md).
 # Used to tell the two kinds of undescribed zip member apart: one the generator WOULD have
 # hashed had it ever been in the repository is `untracked`; one it could never see is
 # `not_covered`, the tripwire for the generator falling behind the SDK.
 ZIPPED_SUFFIXES = {".py", ".ipynb", ".txt", ".md", ".r", ".sql"}
 ZIP_EXCLUDED_SUBTREE = "workspace"
 
-# Left out of the filesystem walk so the `untracked` bucket stays readable (PRODUCT_SPEC.md
+# Left out of the filesystem walk so the `untracked` bucket stays readable (docs/checker.md
 # section 5.3). Recorded verbatim in the report, so a reader can see what was never looked at.
 SCAN_EXCLUDED_TOP_LEVEL = {"archive", "data", "configuration", REPORT_DIR_NAME}
 SCAN_EXCLUDED_ANY_DEPTH = {"papermill_outputs"}
@@ -90,7 +90,7 @@ SCAN_EXCLUDES_DOT_DIRECTORIES = True
 # simply fails to match any tag, which is the right answer.
 VERSION_NUMBER_SUFFIX = re.compile(r"\s*\[v\d+\]\s*$")
 
-# Human-readable display text, never parsed by a consumer (PRODUCT_SPEC.md section 5.5).
+# Human-readable display text, never parsed by a consumer (docs/checker.md section 5.5).
 REMEDIATION = {
     "match": None,
     "attributed": None,
@@ -125,7 +125,7 @@ REMEDIATION = {
     "not_covered": (
         "This file is inside a deployed pipeline zip, but its type is one the release manifest "
         "generator does not hash. The generator has fallen behind the OpenHEXA SDK's zip rule - "
-        "fix the generator (release_strategy.md, 'Manifest generation')."
+        "fix the generator (docs/contracts/release_manifest.md)."
     ),
     "unreadable": (
         "The file could not be read, so nothing is known about its contents. Check permissions "
@@ -134,7 +134,7 @@ REMEDIATION = {
 }
 
 # Where the source changes what the reader should do. A file inside a deployed zip is code
-# that runs, not an inert stray - the sharper case of PRODUCT_SPEC.md section 5.3.
+# that runs, not an inert stray - the sharper case of docs/checker.md section 5.3.
 REMEDIATION_IN_ZIP = {
     "untracked": (
         "This file ships inside the deployed pipeline version, yet no release has ever contained "
@@ -154,7 +154,7 @@ PIPELINE_REMEDIATION = {
     ),
     "not_in_target": (
         "This pipeline is not part of the target release. A pipeline cannot delete another "
-        "pipeline in OpenHEXA, so it is left in place (PRODUCT_SPEC.md section 7.5); delete it by "
+        "pipeline in OpenHEXA, so it is left in place (docs/deployer.md section 7.5); delete it by "
         "hand in the OpenHEXA UI if it is no longer wanted."
     ),
     "unreadable": (
@@ -266,7 +266,7 @@ def snt_workspace_checker(github_repo: str, release_tag: str | None) -> None:
 def resolve_target(release_tag: str | None, declared_tag: str | None) -> tuple[str | None, str]:
     """Decide which release this run checks against - if any - and record where that came from.
 
-    The order is fixed by PRODUCT_SPEC.md section 4.2: the parameter, then the .snt_release
+    The order is fixed by docs/checker.md section 4.2: the parameter, then the .snt_release
     marker, then no target at all, which is attribution mode. The reserved parameter value
     `none` (decision D17) selects attribution mode outright, ahead of the marker, so a
     scheduled attribution check never needs the marker deleted first.
@@ -358,7 +358,7 @@ def parse_timestamp(value: str | None) -> datetime | None:
     """Parse a GitHub ISO-8601 timestamp, returning None rather than guessing on bad input.
 
     A release with no usable timestamp is reported `unordered`, never placed by a guess
-    (PRODUCT_SPEC.md section 5.2).
+    (docs/checker.md section 5.2).
 
     Returns
     -------
@@ -418,7 +418,7 @@ def list_releases(github_repo: str) -> list[dict]:
             break
 
     published = [release for release in releases if not release.get("draft")]
-    # Logged because it is the live evidence for PRODUCT_SPEC.md section 7.2.
+    # Logged because it is the live evidence for docs/checker.md section 7.2.
     current_run.log_info(
         f"Listed {len(published)} release(s) of {github_repo} in {page} GitHub API request(s); "
         f"unauthenticated rate limit remaining this hour: {remaining}."
@@ -452,11 +452,12 @@ def load_manifests(releases: list[dict]) -> tuple[dict, list[dict], list[dict]]:
 
     A release whose manifest is absent or unusable makes the report incomplete: a file that
     only that release shipped would otherwise be mislabelled `untracked` or `unknown_content`
-    without anything saying so (PRODUCT_SPEC.md sections 5.4 and 5.5).
+    without anything saying so (docs/checker.md sections 5.4 and 5.5).
 
     A manifest with no `pipelines` block predates the phase-0 generator. snt_workspace_deployer
-    carries a fallback for that; this checker deliberately does not (PRODUCT_SPEC.md section
-    2.1), so such a manifest is treated as unusable rather than half-read.
+    carries a fallback for that; this checker deliberately does not
+    (docs/contracts/release_manifest.md section 2.1), so such a manifest is treated as unusable
+    rather than half-read.
 
     Returns
     -------
@@ -500,7 +501,7 @@ def load_manifests(releases: list[dict]) -> tuple[dict, list[dict], list[dict]]:
             }
         )
 
-    # Logged because it is the live evidence for PRODUCT_SPEC.md section 7.2: equal to the
+    # Logged because it is the live evidence for docs/checker.md section 7.2: equal to the
     # figure logged after the release list means asset downloads cost no API budget.
     current_run.log_info(
         f"After downloading {len(manifests)} manifest(s): unauthenticated rate limit remaining this "
@@ -655,7 +656,7 @@ def build_index(manifests: dict, releases: list[dict], target_tag: str | None) -
 
 
 def position_of(tags: list[str], index: ReleaseIndex) -> str:
-    """Place a set of releases relative to the target, by `published_at` (PRODUCT_SPEC.md 5.2).
+    """Place a set of releases relative to the target, by `published_at` (docs/checker.md 5.2).
 
     `both` is the changed-then-reverted case: the content matches releases on either side of
     the target and not the target itself. A release with no usable timestamp - or one
@@ -682,7 +683,7 @@ def position_of(tags: list[str], index: ReleaseIndex) -> str:
 def classify(rel_path: str, observed: str | None, index: ReleaseIndex) -> dict:
     """Assign one status to a path, given the hash observed for it (None when it is absent).
 
-    The path is asked about before the bytes (PRODUCT_SPEC.md section 5.1.1): a path no
+    The path is asked about before the bytes (docs/checker.md section 5.1.1): a path no
     release ever shipped is `untracked` and its content is never compared at all.
 
     For a known path, `matching_releases` holds the releases other than the target whose
@@ -734,7 +735,7 @@ def classify(rel_path: str, observed: str | None, index: ReleaseIndex) -> dict:
 def to_spans(tags: list[str], index: ReleaseIndex) -> list[dict]:
     """Collapse a set of releases into contiguous spans, in `published_at` order.
 
-    Decision D14 (PRODUCT_SPEC.md section 7.8): a file unchanged across many releases
+    Decision D14 (docs/checker.md section 7.8): a file unchanged across many releases
     renders as one span rather than a list that grows with release history. A span is
     broken by any release outside the set - including the target itself, and including a
     release whose manifest could not be read, since nothing is known about its content. A
@@ -783,7 +784,7 @@ def verdict(
 
 
 def make_entry(path: str, source: str, pipeline_name: str | None, observed: str | None, result: dict) -> dict:
-    """Build one report entry. Fields are never omitted (PRODUCT_SPEC.md section 5.5).
+    """Build one report entry. Fields are never omitted (docs/checker.md section 5.5).
 
     Returns
     -------
@@ -959,7 +960,7 @@ def check_pipeline_versions(index: ReleaseIndex, token: str) -> tuple[list[dict]
 
     Only the current version is read. Older versions are history - they are not what would
     run, and reporting on them would drown the report in files nobody can act on
-    (PRODUCT_SPEC.md section 3.1).
+    (docs/checker.md section 3.1).
 
     Returns
     -------
@@ -1044,7 +1045,7 @@ def classify_zip_member(dir_name: str, member: str, observed: str | None, index:
 
     A member at a path no release ever shipped is split by the SDK's own zip rule: one the
     manifest generator would have hashed had it ever been in the repository is `untracked`
-    - the sharper case of PRODUCT_SPEC.md section 5.3, since it ships and runs - while one
+    - the sharper case of docs/checker.md section 5.3, since it ships and runs - while one
     the generator could never have seen is `not_covered`, the alarm for the generator's rule
     having fallen behind the SDK's.
 
@@ -1099,7 +1100,7 @@ def list_unknown_pipelines(
     """Name the pipelines deployed in this workspace that no release describes.
 
     Their contents are not read: they are not the release's business. Before the checker
-    ships in a release, it appears here itself (PRODUCT_SPEC.md section 6.2). A failure is an
+    ships in a release, it appears here itself (docs/checker.md section 6.2). A failure is an
     error that makes the report incomplete, but does not stop the run - every pipeline a
     release describes has already been checked by code. `in_target` is False when there is a
     target (no release describes them, so the target does not either) and None when there is
@@ -1209,7 +1210,7 @@ def name_matches_content(dir_name: str, version_name: str, members: dict, index:
     A version name is free text somebody typed; the hash is evidence. When they disagree the
     hash wins and the name is reported as misleading - a workspace whose version labels have
     stopped meaning anything looks perfectly healthy in the OpenHEXA UI, which shows only the
-    names (PRODUCT_SPEC.md section 3.1).
+    names (docs/checker.md section 3.1).
 
     With every manifest loaded, a version named after ANY release can be judged, not only
     one named after the target. The zip must hold exactly that release's files for this
@@ -1273,7 +1274,7 @@ def pipeline_report(
 def attribution_summary(entries: list[dict], index: ReleaseIndex, releases_considered: list[dict]) -> dict:
     """Score every release on how far the workspace agrees with it, and how much of it is there.
 
-    Decision D15, revised (PRODUCT_SPEC.md section 7.10). Each release is judged only on the
+    Decision D15, revised (docs/checker.md section 7.10). Each release is judged only on the
     paths it ships. A present file at a path the release does not ship is `extra` for it -
     neither agreement nor disagreement. Counting such files as disagreement made every
     leftover of a removed file (the deployer removes nothing, and a pipeline cannot delete
@@ -1391,7 +1392,7 @@ def build_report(
     Returns
     -------
     dict
-        The full report, in the shape frozen by docs/wip/docs/status_report.schema.json.
+        The full report, in the shape frozen by docs/contracts/status_report.schema.json.
     """
     by_status: dict[str, int] = {}
     for entry in entries:
@@ -1434,7 +1435,7 @@ def build_report(
         "scan_exclusions": scan_exclusions(),
         "errors": errors,
         # Named so the report never reads as a clean bill of health for things it never
-        # looked at (PRODUCT_SPEC.md sections 1.2 and 5.4).
+        # looked at (docs/checker.md sections 1.2 and 5.4).
         "blind_spots": [
             "In verification mode, matching_releases is carried only on entries that are not `match` "
             "(decision D14); summary.attribution still counts every file.",
@@ -1490,7 +1491,7 @@ def log_summary(report: dict, report_path: Path) -> None:
 
     Every actionable entry gets one line. Untracked files on the filesystem are not
     actionable (decision D6) and can number in the hundreds in a real workspace, so they are
-    counted with a short sample rather than listed (PRODUCT_SPEC.md section 5.4). Neither are
+    counted with a short sample rather than listed (docs/checker.md section 5.4). Neither are
     `match` and `attributed` entries - they are the normal case - so the coverage scores
     stand in for them: one line per release.
     """

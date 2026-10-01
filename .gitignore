@@ -15,5 +15,7 @@ ignore/
 # destructive-git guardrail to be active (see CLAUDE.md "Agent guardrails").
 !.claude/settings.json
 # ...and the two cross-repo contracts.
-!docs/docs/status_report.schema.json
-!docs/docs/release_manifest.schema.json
+!docs/contracts/status_report.schema.json
+!docs/contracts/release_manifest.schema.json
+# ...and the test fixtures: real sandbox artefacts, checked to hold no country data or credential.
+!tests/fixtures/*.json

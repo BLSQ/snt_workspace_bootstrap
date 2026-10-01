@@ -70,6 +70,11 @@ ignore = [
     "COM812", # Missing trailing comma
 ]
 
+[tool.ruff.lint.per-file-ignores]
+# The checker stub test is a script of module-level asserts against stubbed manifests, kept as it was
+# written; docstrings, annotations and pytest's assertion style are not worth retrofitting there.
+"tests/test_checker_stub.py" = ["ANN", "D", "E501", "PT018"]
+
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
 mypy-init-return = true

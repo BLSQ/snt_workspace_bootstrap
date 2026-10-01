@@ -1,7 +1,7 @@
 """Deploy a pinned GitHub release of the SNT codebase into this OpenHEXA workspace.
 
 Both halves of the codebase move together, on one release tag, replacing the two
-uncoordinated update paths described in docs/wip/release_strategy.md:
+uncoordinated update paths described in docs/release_strategy.md:
 
     R analytics   pipelines/**/*.ipynb, pipelines/**/utils/*.r, code/**/*.r
                   -> copied into the workspace filesystem, where notebooks source() them.

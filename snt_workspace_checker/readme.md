@@ -16,9 +16,9 @@ It runs in one of two modes (decision D11):
 
 Both modes report the per-release scores.
 
-> **Phase 4 of [`docs/wip/PRODUCT_SPEC.md`](../docs/wip/PRODUCT_SPEC.md) §6.** The report shape is
+> **Phase 4 of [`docs/checker.md`](../docs/checker.md) §6.** The report shape is
 > **frozen at `schema_version: 1`**. The contract is the JSON Schema
-> [`docs/wip/docs/status_report.schema.json`](../docs/wip/docs/status_report.schema.json); this
+> [`docs/contracts/status_report.schema.json`](../docs/contracts/status_report.schema.json); this
 > readme explains it, and the schema wins if the two disagree.
 
 ## Parameters
@@ -27,7 +27,7 @@ Both modes report the per-release scores.
   * **Name:** GitHub repository
   * **Description:** The `owner/repo` whose releases this workspace is checked against. A parameter
     while the product is in testing; it will be hard-coded before production, so a user cannot point
-    the checker at an arbitrary repository (`PRODUCT_SPEC.md` §5.4).
+    the checker at an arbitrary repository ([`docs/checker.md`](../docs/checker.md) §5.4).
   * **Default:** `BLSQ/snt_development_sandbox`.
 * **`release_tag`** (String, Optional):
   * **Name:** Target release tag
@@ -40,7 +40,7 @@ Both modes report the per-release scores.
   * **Default:** none.
 
 This pipeline takes **no credential parameter and needs no connection.** A run's own `HEXA_TOKEN`
-reads pipeline version contents in full ([`HISTORY.md`](../docs/wip/HISTORY.md) §2.4), so it can run
+reads pipeline version contents in full ([`HISTORY.md`](../docs/HISTORY.md) §2.4), so it can run
 unattended in a country workspace that holds no connection at all.
 
 ## Functionality Overview
@@ -140,7 +140,7 @@ Written to the **workspace filesystem** (no dataset, no database table):
 Nothing is published to an OpenHEXA dataset.
 
 **The report's top-level keys** (all always present; types, enums and nullability are in the
-[schema](../docs/wip/docs/status_report.schema.json)): `schema_version`,
+[schema](../docs/contracts/status_report.schema.json)): `schema_version`,
 `snt_workspace_check_version`, `generated_at`, `workspace`, `repo`, `mode`, `target_release`,
 `declared_release`, `releases_considered`, `incomplete`, `summary` (`by_status`, `attribution`),
 `pipelines`, `entries`, `inert_filesystem_copies`, `scan_exclusions`, `errors`, `blind_spots`.
@@ -195,7 +195,7 @@ Nothing is published to an OpenHEXA dataset.
 >   deployed or in the target, plus one per deployed pipeline that no release describes
 >   (`in_any_release: false`, contents not read). `in_target: false` on a deployed pipeline means it
 >   is **not part of the target release and is left in place**. A pipeline cannot delete another
->   pipeline in OpenHEXA (`PRODUCT_SPEC.md` §7.5). In attribution mode `in_target` is `null`, because
+>   pipeline in OpenHEXA ([`docs/deployer.md`](../docs/deployer.md) §7.5). In attribution mode `in_target` is `null`, because
 >   there is no target to be part of.
 > - **`pipelines[].version_name_matches_content`**: a version's *name* is free text somebody typed;
 >   its hash is evidence. It is `true` when the zip holds exactly the files, byte for byte, that the
