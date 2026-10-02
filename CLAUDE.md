@@ -155,6 +155,7 @@ Read only what the task needs. `docs/HISTORY.md` is **never** read by default.
 | [`docs/openhexa_deployment.md`](docs/openhexa_deployment.md) | GraphQL deploy sequence, tokens, gotchas, Templates/R5 | Touching deployment or credentials |
 | [`docs/context/snt_development.md`](docs/context/snt_development.md) | The source repo's facts these tools depend on | Anything touching what a release contains |
 | [`docs/release_strategy.md`](docs/release_strategy.md) | Why, tag immutability, the three operations, components, one workspace per release | Big-picture questions |
+| [`docs/roadmap.md`](docs/roadmap.md) | The bootstrap: a list of sources instead of `github_repo`, this repo as a source, the starting problem, web apps and the OpenHEXA-dev questions | Planning ahead, or anything touching more than one source repo |
 | [`docs/decisions.md`](docs/decisions.md) | D1–D26, append-only | Before reopening any choice |
 | [`docs/sandbox.md`](docs/sandbox.md) | Sandbox repo and workspace, fixture releases, expected check results | Testing |
 | [`docs/HISTORY.md`](docs/HISTORY.md) | Dead ends, closed issues, superseded designs and layouts | Before re-investigating something that seems solved |

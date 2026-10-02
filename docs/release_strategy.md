@@ -83,7 +83,8 @@ Explicitly out of scope:
 * `data/` — bootstrapped by the pipelines themselves.
 * `configuration/` — managed by the Config Editor web app.
 * Web app deployment. How to deploy the two OH web apps programmatically from GitHub is an open
-  question for the OpenHEXA developers; for now it stays manual.
+  question for the OpenHEXA developers; for now it stays manual. What the API offers, and the
+  questions: [`roadmap.md`](roadmap.md) §4.
 
 ### The three operations
 
