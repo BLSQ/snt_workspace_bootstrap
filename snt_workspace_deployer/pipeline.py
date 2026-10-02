@@ -217,7 +217,7 @@ def get_release(github_repo: str, release_tag: str | None) -> dict:
 
     A blank `release_tag` resolves to GitHub's "latest" release, which is the most recent
     published one that is neither a draft nor flagged as a pre-release. A pre-release must
-    therefore be requested by its tag.
+    therefore be requested by its tag, and deploying one is logged as a warning (D27).
 
     Returns
     -------
@@ -235,6 +235,13 @@ def get_release(github_repo: str, release_tag: str | None) -> dict:
     release = response.json()
     if not release_tag:
         current_run.log_info(f"No release tag given: deploying the latest release, {release['tag_name']}.")
+    if release.get("prerelease"):
+        current_run.log_warning(
+            f"[WARNING] Release {release['tag_name']} is a pre-release, for development and testing "
+            "only, not for a country workspace. snt_workspace_checker ignores pre-releases unless "
+            "one is its target; run with an empty tag, it targets the release in .snt_release, i.e. "
+            "this one."
+        )
     return release
 
 

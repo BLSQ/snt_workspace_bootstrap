@@ -93,6 +93,9 @@ reports, enriched `.snt_release`) is the next step and has not been started. Cha
 * **D24 (2026-10-01):** every failure is logged as an `[ERROR]` message to the run's Messages before
   the run stops (`abort_run()`, plus a catch-all in the pipeline function), and a GitHub 404 on the
   release is diagnosed into its cause.
+* **D27 (2026-10-02):** a pre-release (only ever deployed by typing its tag) is deployed as usual,
+  with a `[WARNING]` in the run's Messages that it is for development and testing only.
+  Not yet tested in a workspace.
 
 **Verified so far:** `ruff check` and `ruff format --check` clean; `get_pipeline` parses the deployer
 and yields exactly `github_repo, release_tag, api_connection, backup_existing, dry_run`; an offline

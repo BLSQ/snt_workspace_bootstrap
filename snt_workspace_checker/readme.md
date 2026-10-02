@@ -50,8 +50,10 @@ unattended in a country workspace that holds no connection at all.
 2. Resolve the **target** release: `release_tag` = `none` means no target; otherwise the parameter,
    else the declared release, else no target. No target means attribution mode. The report records
    the outcome under `target_release.resolved_from`: `parameter`, `marker` or `nothing_given`.
-3. **List every published release** of the repository (one GitHub API request per 100 releases) and
-   download each one's **`release_manifest.json`** asset. A release whose manifest is absent, cannot
+3. **List every published full release** of the repository (one GitHub API request per 100 releases)
+   and download each one's **`release_manifest.json`** asset. Drafts are skipped, and so are
+   pre-releases unless one is the target: pre-releases are for development and testing only, and do
+   not appear anywhere in the report (D27). A release whose manifest is absent, cannot
    be downloaded, or has no `pipelines` block cannot be used for comparison. It is listed with
    `manifest_available: false`, added to `errors`, and the report is marked `incomplete`. The run
    stops (raises) only if the **target** is not among the published releases or has no usable

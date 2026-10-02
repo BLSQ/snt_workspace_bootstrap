@@ -220,7 +220,7 @@ def snt_workspace_checker(github_repo: str, release_tag: str | None) -> None:
                 f"'{target_tag}'. The declaration records intent, not verified fact."
             )
 
-    releases = list_releases(github_repo)
+    releases = list_releases(github_repo, target_tag)
     manifests, releases_considered, errors = load_manifests(releases)
     target_release = require_target(target_tag, releases, manifests, errors) if target_tag else None
     index = build_index(manifests, releases, target_tag)
@@ -385,12 +385,13 @@ def release_sort_key(release: dict) -> tuple:
     return (published is None, published or datetime.min.replace(tzinfo=UTC), release["tag_name"])
 
 
-def list_releases(github_repo: str) -> list[dict]:
-    """List every published release of the repository, oldest first.
+def list_releases(github_repo: str, target_tag: str | None) -> list[dict]:
+    """List every published full release of the repository, plus the target, oldest first.
 
     One page of 100 is one GitHub API request, so for any realistic release count this is a
     single call - the same cost as phase 1's single `releases/tags/<tag>` lookup. Drafts are
-    skipped: they are not releases anyone can deploy.
+    skipped: they are not releases anyone can deploy. Pre-releases are skipped unless one is the
+    target (decision D27, `drop_prereleases()`).
 
     Returns
     -------
@@ -423,7 +424,31 @@ def list_releases(github_repo: str) -> list[dict]:
         f"Listed {len(published)} release(s) of {github_repo} in {page} GitHub API request(s); "
         f"unauthenticated rate limit remaining this hour: {remaining}."
     )
-    return sorted(published, key=release_sort_key)
+    kept, skipped = drop_prereleases(published, target_tag)
+    if skipped:
+        current_run.log_info(
+            f"Left out {len(skipped)} pre-release(s), which are for development and testing only: "
+            f"{', '.join(skipped)}. To check against one, give its tag as the target."
+        )
+    return sorted(kept, key=release_sort_key)
+
+
+def drop_prereleases(releases: list[dict], target_tag: str | None) -> tuple[list[dict], list[str]]:
+    """Remove every pre-release except the target (decision D27).
+
+    A pre-release is cut from a feature branch to test it before merge. Left in, it would sit
+    between real releases in the `published_at` order (D4), break attribution spans (D14) and
+    shift what counts as behind or ahead in every country workspace's report. The target is kept
+    whatever it is, so a staging workspace can still be checked against its own pre-release.
+
+    Returns
+    -------
+    tuple[list[dict], list[str]]
+        (the releases kept, in their input order; the tags of the pre-releases left out).
+    """
+    kept = [r for r in releases if not r.get("prerelease") or r["tag_name"] == target_tag]
+    skipped = [r["tag_name"] for r in releases if r.get("prerelease") and r["tag_name"] != target_tag]
+    return kept, skipped
 
 
 def download_manifest(release: dict) -> dict | None:
@@ -541,7 +566,7 @@ def require_target(target_tag: str, releases: list[dict], manifests: dict, error
     release = next((r for r in releases if r["tag_name"] == target_tag), None)
     if release is None:
         known = ", ".join(r["tag_name"] for r in releases) or "none"
-        raise ValueError(f"Release '{target_tag}' not found. Published releases: {known}.")
+        raise ValueError(f"Release '{target_tag}' not found. Published full releases: {known}.")
     if target_tag not in manifests:
         reason = next((e["message"] for e in errors if e["scope"] == f"manifest:{target_tag}"), "")
         raise ValueError(

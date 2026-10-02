@@ -81,7 +81,7 @@
     },
     "releases_considered": {
       "type": "array",
-      "description": "Every published release of the repository, in published_at order (oldest first).",
+      "description": "Every published full release of the repository, plus the target, in published_at order (oldest first). Drafts and pre-releases are left out; a pre-release appears only when it is the target (decision D27).",
       "items": { "$ref": "#/$defs/release_ref" }
     },
     "incomplete": {
