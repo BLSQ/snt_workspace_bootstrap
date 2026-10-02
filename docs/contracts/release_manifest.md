@@ -2,7 +2,7 @@
 
 > The authority is [`release_manifest.schema.json`](release_manifest.schema.json) (D26). This file
 > holds the prose: how the manifest is generated in `snt_development`, why it has a `pipelines`
-> block, and the legacy fallback still in the deployer. What `snt_development` ships is in
+> block, and why legacy manifests are refused. What `snt_development` ships is in
 > [`../context/snt_development.md`](../context/snt_development.md).
 
 ## Manifest generation — done
@@ -85,19 +85,15 @@ are deployed and correct — a false alarm in the one component whose job is to 
 
 `files` keeps its exact previous shape, so the block is additive: a reader that ignores `pipelines`
 behaves as before. Legacy (pre-phase-0) manifests have no such block and are not supported: a
-consumer refuses one. `split_manifest()` in `snt_workspace_deployer` still carries a fallback that
-derives pipeline directories from `<name>/pipeline.py` entries; it is to be deleted (below).
+consumer refuses one. Both consumers name the phase-0 cutover in the error:
+`snt_workspace_checker` skips that release with a `[WARNING]`, and `snt_workspace_deployer`
+(`download_manifest()`) aborts with `[ERROR] Cannot deploy: …` before writing anything.
 
-**Decided 2026-10-01 (D26): delete the fallback.** Legacy manifests only ever existed during
-development, no live release lacks the block, and the fallback is unreachable in testing — untested
-back-compat code for a case that can no longer occur. Delete it in a PR of its own; until then it is
-dead code. The contract is [`release_manifest.schema.json`](../contracts/release_manifest.schema.json),
-which requires the block.
-
-`snt_workspace_checker` deliberately does **not** carry the fallback: it refuses a manifest with no
-`pipelines` block, naming the phase-0 cutover in the error. That makes the two components disagree on
-purpose, and the disagreement is the argument — one of them has untested code for an impossible case
-and the other does not. Resolved in the checker's favour (D26).
+**Decided 2026-10-01 (D26): no fallback.** Legacy manifests only ever existed during development
+and no live release lacks the block. The contract is
+[`release_manifest.schema.json`](../contracts/release_manifest.schema.json), which requires the
+block (it may be empty). The deployer's former fallback, which derived pipeline directories from
+`<name>/pipeline.py` entries, is in [`HISTORY.md`](../HISTORY.md) §3.4.
 
 ## 7.1 ~~The manifest under-described what is deployed~~ — **closed**
 

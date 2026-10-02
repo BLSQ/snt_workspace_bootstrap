@@ -660,7 +660,7 @@ retention/pruning. Also parked until one of them blocks something (Giulia, 2026-
   rate limit (§7.2); it would matter only for GitHub outages, bandwidth, or runs with no internet.
 * ~~**The deployer's `DUPLICATE_PIPELINE_VERSION_NAME` defect** on re-deploy.~~ **Written 2026-09-30
   (D22), untested** — [`deployer.md`](deployer.md) §6.7. No longer blocks phase 5 once the test plan passes.
-* **Delete the deployer's legacy-manifest fallback** ([`release_manifest.md`](contracts/release_manifest.md) §2.1, D26: decided 2026-10-01), in a PR of its own.
+* ~~**Delete the deployer's legacy-manifest fallback**~~ **Deleted 2026-10-02** ([`release_manifest.md`](contracts/release_manifest.md) §2.1, D26).
 * **The 15 `not_in_repo` notebooks** from the D9 run, one real country workspace, 2026-09-29. Their
   names would show whether they are country variants, renamed notebooks or scratch work, which is
   input for D5. Not collected.

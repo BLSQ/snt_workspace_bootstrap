@@ -150,7 +150,7 @@ def deploy_release(
     release = get_release(github_repo, release_tag)
     release_tag = release["tag_name"]
     manifest = download_manifest(release)
-    analytics_files, pipeline_dirs = split_manifest(manifest["files"], manifest.get("pipelines"))
+    analytics_files, pipeline_dirs = split_manifest(manifest["files"], manifest["pipelines"])
     current_run.log_info(
         f"Release {github_repo}@{release_tag} tracks {len(manifest['files'])} files: "
         f"{len(analytics_files)} analytics file(s) and {len(pipeline_dirs)} pipeline(s)."
@@ -318,10 +318,12 @@ def abort_run(reason: str) -> NoReturn:
 def download_manifest(release: dict) -> dict:
     """Download and parse release_manifest.json from a release's assets.
 
+    A manifest without a `pipelines` block is refused before anything is written (D26).
+
     Returns
     -------
     dict
-        The parsed manifest: {"version": ..., "files": {path: sha256}}.
+        The parsed manifest: {"version": ..., "files": {path: sha256}, "pipelines": {dir: spec}}.
     """
     asset = next((a for a in release["assets"] if a["name"] == "release_manifest.json"), None)
     if asset is None:
@@ -337,44 +339,38 @@ def download_manifest(release: dict) -> dict:
             f"({response.status_code}: {response.text[:200]})."
         )
     try:
-        return response.json()
+        manifest = response.json()
     except ValueError:
         abort_run(f"release_manifest.json of release {release['tag_name']} is not valid JSON.")
+    if "pipelines" not in manifest:
+        abort_run(
+            f"release_manifest.json of release {release['tag_name']} has no 'pipelines' block (it predates "
+            "the phase-0 generator), so which files ship inside pipeline zips is unknown. Manifests without "
+            "it are not supported (D26): re-run the 'Generate Release Manifest' workflow for this release."
+        )
+    return manifest
 
 
-def split_manifest(tracked_files: dict, pipelines: dict | None = None) -> tuple[dict, list[str]]:
+def split_manifest(tracked_files: dict, pipelines: dict) -> tuple[dict, list[str]]:
     """Separate the manifest into filesystem-synced analytics and API-deployed pipelines.
 
     Everything under a pipeline directory is deliberately excluded from the filesystem
     sync, because OpenHEXA runs pipelines from their registered version's zip and never
     from the workspace bucket. A copy in the bucket is inert and actively misleading.
 
-    Two manifest generations are handled. Releases from 2026-09-21 onward carry a
-    `pipelines` block naming the directories outright. Older manifests tracked only
-    `<name>/pipeline.py`, so the directories are recovered from those entries instead;
-    the exclusion is by directory either way, which is what keeps this correct if an old
-    manifest is ever read alongside a new one.
-
     Parameters
     ----------
     tracked_files : dict
         The manifest's `files` map, `{repository path: sha256}`.
-    pipelines : dict | None
-        The manifest's `pipelines` block, if the release has one.
+    pipelines : dict
+        The manifest's `pipelines` block, keyed by pipeline directory. May be empty.
 
     Returns
     -------
     tuple[dict, list[str]]
         (the analytics files to copy, keyed by path; the pipeline directory names to deploy).
     """
-    if pipelines:
-        pipeline_dirs = set(pipelines)
-    else:
-        pipeline_dirs = {
-            Path(p).parts[0]
-            for p in tracked_files
-            if len(Path(p).parts) == 2 and Path(p).parts[1] == "pipeline.py"
-        }
+    pipeline_dirs = set(pipelines)
 
     analytics = {
         rel_path: checksum

@@ -354,6 +354,29 @@ a human to run) are referenced by name where relevant.
 > dead ends and verifications against deleted fixtures are in `HISTORY.md` — read that
 > before re-investigating anything here.
 
+### 3.4 The deployer's legacy-manifest fallback — deleted 2026-10-02
+
+From phase 0 (2026-09-21) until 2026-10-02, `split_manifest()` in the deployer read the manifest's
+`pipelines` block when present, and otherwise recovered the pipeline directories from the
+`<name>/pipeline.py` entries of `files`:
+
+```python
+if pipelines:
+    pipeline_dirs = set(pipelines)
+else:
+    pipeline_dirs = {
+        Path(p).parts[0]
+        for p in tracked_files
+        if len(Path(p).parts) == 2 and Path(p).parts[1] == "pipeline.py"
+    }
+```
+
+The checker never carried it. D26 (2026-10-01) decided legacy manifests are not supported, so the
+fallback was untested code for a case that can no longer occur. It was deleted in a change of its
+own. `download_manifest()` now refuses a manifest with no `pipelines` block. One behaviour went with
+it: an empty block (`{}`) used to fall through to the derivation, and is now read as "no pipelines",
+as the schema says.
+
 ---
 
 ## 4. Retired sandbox state and stale verification records
@@ -410,3 +433,4 @@ workspace, so there was nothing to archive. That gap is still open.
 | 2026-09-30 | Phase 4 done (schema frozen, D18–D20). Phase 5 started with the manager on its own: `sync_analytics`, `deploy_pipelines`, `only_pipelines` and `create_missing` removed (D21); the `DUPLICATE_PIPELINE_VERSION_NAME` re-deploy defect addressed by comparing contents and relabelling unchanged pipelines with the tag (D22). Written and linted, stub-tested offline, **not yet run in a workspace** ([`deployer.md`](deployer.md) §6.7). Recorded as limits to keep in mind: no factory reset, and pipelines dropped by a release remain as strays (§7.5). |
 | 2026-10-01 | Manager: an empty `release_tag` now deploys the latest release (D23), and every failure is logged to the run's Messages as `[ERROR] Cannot deploy: …` (D24). Prompted by a sandbox run that resolved to `v0.4.0-test` and stopped on its missing manifest with no message. Both confirmed in `snt-development-sandbox`; the D21/D22 test plan is still open ([`deployer.md`](deployer.md) §6.7). Working assumption recorded as D25: one workspace per release, so rolling back and forth only has to be safe, not clean ([`release_strategy.md`](release_strategy.md) §1.3). |
 | 2026-10-01 | Moved to `BLSQ/snt_workspace_bootstrap`, then renamed (M7): `snt_workspace_check` → `snt_workspace_checker`, `snt_workspace_manager` → `snt_workspace_deployer` (Workspace Manager → Workspace Deployer). Entries above keep the names they were written with; the report key `snt_workspace_check_version` stays frozen. |
+| 2026-10-02 | Deployer: the pre-phase-0 manifest fallback in `split_manifest()` deleted (D26, §3.4). A manifest with no `pipelines` block now stops the run with `[ERROR] Cannot deploy: …` before anything is written. Not yet run in a workspace. |

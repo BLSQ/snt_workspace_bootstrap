@@ -165,5 +165,5 @@ is described in its own file:
   published that day as "Unofficial 1st release for testing purposes".
 * Finish the deployer's test plan, D21–D24 and `backup_existing` ([`deployer.md`](deployer.md)
   §6.7). Run by hand in the sandbox.
-* Delete the pre-phase-0 fallback in `split_manifest()`, in a PR of its own (D26,
+* ~~Delete the pre-phase-0 fallback in `split_manifest()`~~ Deleted 2026-10-02 (D26,
   [`release_manifest.md`](contracts/release_manifest.md) §2.1).
