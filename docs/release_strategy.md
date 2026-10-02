@@ -66,6 +66,53 @@ Two things that are easy to get wrong:
 * **Leave "Restrict creations" unchecked.** Checking it blocks creating new tags, i.e. blocks every
   future release.
 
+### Testing a feature branch: staging pre-releases — proposal
+
+**Not built or decided** (Giulia, 2026-10-02). The intent: before a PR is merged, cut a **GitHub
+pre-release from the feature branch**, not from `main`, and deploy it with `snt_workspace_deployer`
+into a clean workspace, so the reviewer tries the whole set of pipelines together. It is one strategy
+for both repositories: a PR in `snt_development` and a PR here are tested the same way.
+
+What already supports it:
+
+* **The manifest is generated.** `generate_manifest.yaml` in `snt_development` runs on
+  `release: published`, which GitHub also fires for a pre-release, and checks out
+  `release.tag_name`, so a tag on a branch commit gets its own manifest. (From the workflow file and
+  GitHub's event docs. No pre-release of `snt_development` has been cut yet to show it.)
+* **Countries cannot pick one up by accident.** An empty `release_tag` resolves through
+  `/releases/latest`, which skips pre-releases (D23), so a staging release is deployed only by typing
+  its tag.
+* **The branch can be deleted after merge.** The tag keeps its commit, so the pre-release stays
+  reproducible after a squash-merge.
+* **Feature branches do not trigger the Template push.** The `push_snt_*.yaml` workflows run only on
+  `main`.
+
+What has to be settled first:
+
+1. **The checker counts pre-releases as releases.** `list_releases()` drops drafts only. Every staging
+   pre-release of `snt_development` would then appear in every country workspace's report, sit in the
+   `published_at` order (D4) between real releases, and can break attribution spans (D14) and shift
+   `ahead` / `behind` positions. The checker must leave pre-releases out unless one is the target,
+   and do so **before the first staging pre-release is cut on `snt_development`**. That change is a
+   new behaviour, not a report-shape change.
+2. **Tag naming, against the ruleset.** `Protect release tags` covers `v*` (above). A semver
+   pre-release such as `v1.3.0-rc.1` is immutable, as a tag should be, and can never be deleted, so
+   staging tags pile up for good. A prefix outside `v*` (e.g. `staging/…`) could be cleaned up, but
+   that also means it could be moved. Every pipeline version and `.snt_release` named after it would
+   then become ambiguous, which is the problem the ruleset exists to prevent. **Open.**
+3. **Which pairing a PR tests.** A `snt_development` PR: its pre-release, with this repo's current
+   deployer. A PR here: this repo's branch, against a fixed `snt_development` release. A change
+   spanning both: a pre-release in each, linked by name (e.g. the same ticket ID). Until this repo
+   publishes manifests ([`roadmap.md`](roadmap.md) §2), the deployer under test is pushed by hand
+   from the branch (D19).
+4. **What "clean workspace" means.** The deployer cannot delete pipelines or files
+   ([`deployer.md`](deployer.md) §7.5), so a reused staging workspace keeps strays from the last PR.
+   Either a new workspace per test, which needs the `oh` connection set up each time
+   ([`openhexa_deployment.md`](openhexa_deployment.md) §7.3b), or one staging workspace where the
+   checker's report is read with that in mind. This fits D25: one workspace per release.
+5. **The `snt_development` side.** Its CLAUDE.md *Release management* section (R22) should point
+   at this section, so both repositories follow one written strategy rather than two copies.
+
 ### What is in scope
 
 Tracked and delivered:
