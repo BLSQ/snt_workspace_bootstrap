@@ -171,6 +171,23 @@ idx_h = chk.build_index(manifests, rel_hole, "v0.2.1-test")
 r = chk.classify("code/fixture_changing.r", H["A"], idx_h)
 assert [s["count"] for s in r["matching_releases"]] == [1, 1], r
 print("spans OK")
+# pre-releases are left out unless one is the target (D27); with them out, the span is unbroken
+rel_pre = [
+    releases[0],
+    {"tag_name": "pr1_staging", "published_at": "2026-09-21T15:30:00Z", "prerelease": True},
+    *releases[1:],
+    {"tag_name": "pr2_staging", "published_at": "2026-09-21T16:10:00Z", "prerelease": True},
+]
+kept, skipped = chk.drop_prereleases(rel_pre, "v0.2.1-test")
+assert kept == releases and skipped == ["pr1_staging", "pr2_staging"], (kept, skipped)
+kept, skipped = chk.drop_prereleases(rel_pre, "pr2_staging")
+assert [r["tag_name"] for r in kept] == [*(r["tag_name"] for r in releases), "pr2_staging"], kept
+assert skipped == ["pr1_staging"], skipped
+kept, skipped = chk.drop_prereleases(rel_pre, None)
+assert kept == releases and len(skipped) == 2, (kept, skipped)
+r = chk.classify("code/fixture_changing.r", H["A"], chk.build_index(manifests, kept, "v0.2.1-test"))
+assert [s["count"] for s in r["matching_releases"]] == [2], r
+print("pre-releases OK")
 
 
 # ============================================================================================

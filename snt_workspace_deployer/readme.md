@@ -66,7 +66,8 @@ particular is the mechanism this pipeline replaces.
    everywhere — version names, `archive/<tag>/`, `.snt_release` — never the word "latest". When
    GitHub finds nothing, the run works out why and says so: repository missing or private, no
    published release at all, only pre-releases (never "latest" on GitHub), or a misspelled tag (the
-   most recent tags are listed). Then download the release's `release_manifest.json` asset; a release
+   most recent tags are listed). A pre-release, which can only be typed, is deployed like any
+   release but logged as a `[WARNING]`: pre-releases are for development and testing (D27). Then download the release's `release_manifest.json` asset; a release
    without it aborts the run, naming the 'Generate Release Manifest' workflow to run.
 3. **Split the manifest:** Any entry of the form `<name>/pipeline.py` identifies a **pipeline to
    deploy**; everything else is an **analytics file to copy**. `pipeline.py` is deliberately

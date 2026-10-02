@@ -78,10 +78,13 @@ What already supports it:
 * **The manifest is generated.** `generate_manifest.yaml` in `snt_development` runs on
   `release: published`, which GitHub also fires for a pre-release, and checks out
   `release.tag_name`, so a tag on a branch commit gets its own manifest. (From the workflow file and
-  GitHub's event docs. No pre-release of `snt_development` has been cut yet to show it.)
+  GitHub's event docs. The first pre-release of `snt_development`, `pr138_snt25-685`, exists as of
+  2026-10-02; whether it carries a manifest is not checked here.)
 * **Countries cannot pick one up by accident.** An empty `release_tag` resolves through
   `/releases/latest`, which skips pre-releases (D23), so a staging release is deployed only by typing
-  its tag.
+  its tag, and the deployer then logs a `[WARNING]` (D27).
+* **Country reports do not see them.** The checker leaves every pre-release out unless one is the
+  target ([`checker.md`](checker.md) §4.3, D27).
 * **The branch can be deleted after merge.** The tag keeps its commit, so the pre-release stays
   reproducible after a squash-merge.
 * **Feature branches do not trigger the Template push.** The `push_snt_*.yaml` workflows run only on
@@ -89,12 +92,8 @@ What already supports it:
 
 What has to be settled first:
 
-1. **The checker counts pre-releases as releases.** `list_releases()` drops drafts only. Every staging
-   pre-release of `snt_development` would then appear in every country workspace's report, sit in the
-   `published_at` order (D4) between real releases, and can break attribution spans (D14) and shift
-   `ahead` / `behind` positions. The checker must leave pre-releases out unless one is the target,
-   and do so **before the first staging pre-release is cut on `snt_development`**. That change is a
-   new behaviour, not a report-shape change.
+1. ~~**The checker counts pre-releases as releases.**~~ **Closed 2026-10-02 (D27):** it leaves them
+   out unless one is the target ([`checker.md`](checker.md) §4.3).
 2. **Tag naming, against the ruleset.** `Protect release tags` covers `v*` (above). A semver
    pre-release such as `v1.3.0-rc.1` is immutable, as a tag should be, and can never be deleted, so
    staging tags pile up for good. A prefix outside `v*` (e.g. `staging/…`) could be cleaned up, but

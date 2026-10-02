@@ -137,6 +137,21 @@ The target release is resolved in this order, and the report always records whic
 2. otherwise `.snt_release`, if present → mode 4.2;
 3. otherwise no target → mode 4.1 (`resolved_from: "nothing_given"`).
 
+### 4.3 Which releases count (D27)
+
+Both modes use every published **full** release. Drafts are skipped, and so are GitHub
+pre-releases, **unless one is the target**. Pre-releases are cut from feature branches for
+development and testing ([`release_strategy.md`](release_strategy.md), staging pre-releases) and are of
+no concern to a country workspace. Left in, they would sit in the `published_at` order (D4) between
+real releases, break attribution spans (D14) and shift `ahead` / `behind`. They are absent from the
+whole report, `releases_considered` and `by_release` included; the run log names the ones left out.
+
+A pre-release given as the target, by parameter or `.snt_release`, is kept and placed by its
+`published_at` like any release. Other pre-releases stay out even then, so behind and ahead are
+measured against full releases only. In attribution mode none is kept: a file whose bytes only a
+pre-release ships then reads `unknown_content` (known path) or `untracked` (new path). There is no parameter to include them; give
+the tag instead.
+
 ## 5. Requirements
 
 ### 5.1 Status taxonomy
