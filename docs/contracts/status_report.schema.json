@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "status_report.schema.json",
   "title": "SNT workspace status report, schema_version 1",
-  "description": "The report written by the snt_workspace_checker pipeline to <workspace root>/snt_status/status_<UTC timestamp>.json and, byte-identical, to status_latest.json. FROZEN at phase 4 (PRODUCT_SPEC.md section 6, decision D18). Compatibility rules: adding a key, a status/position/resolved_from/source value, or a blind_spots line is NOT a breaking change and keeps schema_version 1; renaming or removing a key or value, changing a type, or changing what a value means is breaking and requires schema_version 2. This schema is deliberately strict (additionalProperties: false, closed enums) so the producer cannot drift silently; a CONSUMER must instead ignore unknown keys and tolerate unknown enum values. Every key is always present; a value that does not apply is null, never omitted. Strings marked x-display-only are text for a human and must never be parsed or compared.",
+  "description": "The report written by the snt_workspace_checker pipeline to <workspace root>/snt_status/status_<UTC timestamp>.json and, byte-identical, to status_latest.json. FROZEN at phase 4 (PRODUCT_SPEC.md section 6, decision D18). Compatibility rules: adding a key, a status/position/resolved_from/source value, or a blind_spots line is NOT a breaking change and keeps schema_version 1; renaming or removing a key or value, changing a type, or changing what a value means is breaking and requires schema_version 2. This schema is deliberately strict (additionalProperties: false, closed enums) so the producer cannot drift silently; a CONSUMER must instead ignore unknown keys and tolerate unknown enum values. Every key is always present; a value that does not apply is null, never omitted. Strings marked x-display-only are text for a human and must never be parsed or compared. One rename was made inside schema_version 1, on 2026-10-02 before any release or consumer existed: snt_workspace_check_version became snt_workspace_checker_version (pipeline renamed, M7). Reports written before that carry the old key and do not validate; from the first release of snt_workspace_checker on, any rename needs schema_version 2.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schema_version",
     "generated_at",
-    "snt_workspace_check_version",
+    "snt_workspace_checker_version",
     "workspace",
     "repo",
     "mode",
@@ -34,7 +34,7 @@
       "format": "date-time",
       "description": "UTC, second precision, ending in Z (e.g. 2026-09-29T13-39-32Z in the filename, 2026-09-29T13:39:32Z here)."
     },
-    "snt_workspace_check_version": {
+    "snt_workspace_checker_version": {
       "type": ["string", "null"],
       "description": "The version of the snt_workspace_checker pipeline that generated this report. A run cannot currently read the name of the pipeline version executing it, so this is null until a source for it is found; the key is frozen regardless."
     },

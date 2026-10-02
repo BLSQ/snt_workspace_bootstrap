@@ -1410,7 +1410,7 @@ def build_report(
         # The version of THIS pipeline that produced the report. A run cannot read the name of
         # the pipeline version executing it, so this is null until a source for it is found.
         # The key is part of the frozen v1 schema and stays, nullable.
-        "snt_workspace_check_version": None,
+        "snt_workspace_checker_version": None,
         "workspace": workspace.slug,
         "repo": github_repo,
         "mode": "verification" if release else "attribution",

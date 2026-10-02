@@ -94,6 +94,7 @@ tools/                    d9_notebook_drift.py — the D9 notebook-drift measure
 dev/environment.yml       the local conda env (ruff, pytest, jsonschema, openhexa.sdk). Never runs on OpenHEXA.
 pyproject.toml            ruff's rulebook. Never runs on OpenHEXA.
 .claude/                  agent guardrails (R19). Active on clone.
+.github/workflows/        generate_manifest.yaml — calls snt_development's manifest generator (D27)
 ignore/                   local only, gitignored: sandbox reports, scratch
 ```
 
@@ -156,7 +157,7 @@ Read only what the task needs. `docs/HISTORY.md` is **never** read by default.
 | [`docs/context/snt_development.md`](docs/context/snt_development.md) | The source repo's facts these tools depend on | Anything touching what a release contains |
 | [`docs/release_strategy.md`](docs/release_strategy.md) | Why, tag immutability, staging pre-releases from feature branches, the three operations, components, one workspace per release | Big-picture questions, or testing a PR |
 | [`docs/roadmap.md`](docs/roadmap.md) | The bootstrap: a list of sources instead of `github_repo`, this repo as a source, the starting problem, web apps and the OpenHEXA-dev questions | Planning ahead, or anything touching more than one source repo |
-| [`docs/decisions.md`](docs/decisions.md) | D1–D26, append-only | Before reopening any choice |
+| [`docs/decisions.md`](docs/decisions.md) | D1–D27, append-only | Before reopening any choice |
 | [`docs/sandbox.md`](docs/sandbox.md) | Sandbox repo and workspace, fixture releases, expected check results | Testing |
 | [`docs/HISTORY.md`](docs/HISTORY.md) | Dead ends, closed issues, superseded designs and layouts | Before re-investigating something that seems solved |
 | [`tests/`](tests/) | Offline stub and contract tests | Before committing a change to either pipeline or a schema: run them |

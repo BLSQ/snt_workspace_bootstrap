@@ -62,6 +62,8 @@ scope for v1 (D5), and until it is done a workspace with one looks alarming.
 
 `.github/workflows/generate_manifest.yaml` lives in `snt_development` and stays there (M3): it runs on
 `release: published` (and `workflow_dispatch`) and attaches `release_manifest.json` to the release.
+It is also called as a reusable workflow (`workflow_call`) by this repository's own
+`generate_manifest.yaml`, so a change to it on `main` reaches both repositories (D27).
 Its shape is the contract in [`../contracts/release_manifest.schema.json`](../contracts/release_manifest.schema.json);
 how it is generated is in [`../contracts/release_manifest.md`](../contracts/release_manifest.md).
 What `snt_development` ships, which the schema deliberately does not fix:

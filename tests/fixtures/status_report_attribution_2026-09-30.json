@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-30T08:33:01Z",
-  "snt_workspace_check_version": null,
+  "snt_workspace_checker_version": null,
   "workspace": "snt-development-sandbox",
   "repo": "BLSQ/snt_development_sandbox",
   "mode": "attribution",

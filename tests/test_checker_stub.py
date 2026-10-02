@@ -404,7 +404,7 @@ rep_a = chk.build_report(
     "parameter",
     "v0.3.0-test",
 )
-assert rep_a["mode"] == "attribution" and rep_a["snt_workspace_check_version"] is None
+assert rep_a["mode"] == "attribution" and rep_a["snt_workspace_checker_version"] is None
 assert_conforms(rep_a, "attribution")
 
 # verification mode: target v0.2.1-test, one pipeline unreadable, so `unreadable` and `errors` appear

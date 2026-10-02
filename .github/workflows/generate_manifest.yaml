@@ -1,0 +1,20 @@
+# Attaches release_manifest.json to every published release of this repository, so the bootstrap can
+# deploy snt_workspace_checker and snt_workspace_deployer like any other pipeline (docs/roadmap.md §2).
+# The generator is not copied here: this calls the one in BLSQ/snt_development, so the SDK zip rule has
+# a single implementation (D27). The called workflow checks out and hashes THIS repository, at this
+# release's tag. Its output must validate against docs/contracts/release_manifest.schema.json.
+name: Generate Release Manifest
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: # Builds the manifest as a run artifact, without a release
+
+# A called workflow can only narrow the caller's token, never widen it; uploading the release asset
+# needs contents: write.
+permissions:
+  contents: write
+
+jobs:
+  generate-manifest:
+    uses: BLSQ/snt_development/.github/workflows/generate_manifest.yaml@main

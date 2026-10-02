@@ -141,7 +141,7 @@ Nothing is published to an OpenHEXA dataset.
 
 **The report's top-level keys** (all always present; types, enums and nullability are in the
 [schema](../docs/contracts/status_report.schema.json)): `schema_version`,
-`snt_workspace_check_version`, `generated_at`, `workspace`, `repo`, `mode`, `target_release`,
+`snt_workspace_checker_version`, `generated_at`, `workspace`, `repo`, `mode`, `target_release`,
 `declared_release`, `releases_considered`, `incomplete`, `summary` (`by_status`, `attribution`),
 `pipelines`, `entries`, `inert_filesystem_copies`, `scan_exclusions`, `errors`, `blind_spots`.
 
@@ -154,7 +154,7 @@ Nothing is published to an OpenHEXA dataset.
 >   `summary.attribution.rule` are for a human. Never parse or compare them; their wording can
 >   change without a version bump. `remediation`'s wording depends on the source as well as the
 >   status: an `untracked` file in a zip is deployed code, one on the filesystem is a stray.
-> - **`snt_workspace_check_version`** is meant to record which version of this pipeline generated
+> - **`snt_workspace_checker_version`** is meant to record which version of this pipeline generated
 >   the report. It is **`null` today**: a run cannot read the name of the pipeline version executing
 >   it, and no source for the value has been found. The key is frozen and nullable.
 > - **`errors[].scope`** is `manifest:<tag>`, `pipeline_version:<code>` or `pipeline_list`.

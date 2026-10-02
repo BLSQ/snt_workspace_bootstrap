@@ -70,15 +70,14 @@ like any other pipeline.
   `snt_workspace_checker/` *and* `snt_workspace_deployer/`. So a release of this repository ships the
   deployer as well as the checker. The filesystem half (`pipelines/**`, `code/**`) matches nothing
   here, so the deployer would copy no analytics from it.
-* **One generator or two.** The generator lives in `snt_development`'s
-  `generate_manifest.yaml` (M3). A copy here would be a second implementation of the SDK's zip rule
-  that can drift from the first. The alternative is to make that workflow reusable
-  (`workflow_call`) and call it from here, which is a change in `snt_development`. **Open.**
-* **Before the first release here:** rename the report key `snt_workspace_check_version` →
-  `snt_workspace_checker_version`. This was decided 2026-10-02 and deferred until now: after a
-  release it needs `schema_version: 2` and a migration (move plan, open questions).
-* **Tag protection:** set up the `Protect release tags` ruleset on this repository before its first
-  `v*` tag ([`release_strategy.md`](release_strategy.md)).
+* **One generator (D27).** [`.github/workflows/generate_manifest.yaml`](../.github/workflows/generate_manifest.yaml)
+  here calls `snt_development`'s generator as a reusable workflow, rather than keeping a second copy
+  of the SDK's zip rule. It needs a `workflow_call` trigger added on `snt_development` `main` first;
+  until then this repository's workflow fails at the call.
+* **Before the first release here:** the report key is renamed `snt_workspace_checker_version`
+  (done 2026-10-02, still `schema_version: 1`; [`checker.md`](checker.md) §5.5).
+* **Tag protection:** the `Protect release tags` ruleset is active on this repository (2026-10-02)
+  ([`release_strategy.md`](release_strategy.md)).
 
 ### To evaluate: deliver these two as OpenHEXA template pipelines instead
 

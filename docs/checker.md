@@ -251,7 +251,7 @@ A JSON file, written to the workspace filesystem, timestamped **and** latest (de
 <workspace root>/snt_status/status_latest.json             ← byte-identical; the stable path the web app reads
 ```
 
-Top-level keys, all always present: `schema_version`, `generated_at`, `snt_workspace_check_version`,
+Top-level keys, all always present: `schema_version`, `generated_at`, `snt_workspace_checker_version`,
 `workspace`, `repo`, `mode`, `target_release`, `declared_release`, `releases_considered`,
 `incomplete`, `summary` (`by_status`, `attribution`), `pipelines`, `entries`,
 `inert_filesystem_copies`, `scan_exclusions`, `errors`, `blind_spots`. An abridged example:
@@ -260,7 +260,7 @@ Top-level keys, all always present: `schema_version`, `generated_at`, `snt_works
 {
   "schema_version": 1,
   "generated_at": "2026-09-29T13:39:32Z",
-  "snt_workspace_check_version": null,
+  "snt_workspace_checker_version": null,
   "workspace": "<slug>",
   "repo": "BLSQ/snt_development_sandbox",
   "mode": "attribution",
@@ -324,11 +324,16 @@ Top-level keys, all always present: `schema_version`, `generated_at`, `snt_works
   parse or compare them; their wording may change at any time without a version bump.
 * Every key that could be absent is present with `null`, never omitted.
 
-**`snt_workspace_check_version`** records which version of the `snt_workspace_checker` pipeline
+**`snt_workspace_checker_version`** records which version of the `snt_workspace_checker` pipeline
 generated the report, so a report can be tied to the code that wrote it. **It is `null` today.** A
 run has no way to read the name of the pipeline version executing it, and no source for the value
 has been found; the key is frozen and nullable so that filling it later is not a breaking change.
-It replaces the earlier name `checker_version`, renamed for clarity before the freeze.
+
+**The one rename inside `schema_version: 1`.** On 2026-10-02 the key was renamed from
+`snt_workspace_check_version` to `snt_workspace_checker_version`, to follow the pipeline's rename
+(M7). It stayed at version 1 because no release of the checker and no consumer of the report
+existed yet. Reports written before 2026-10-02 carry the old key and no longer validate. From the
+checker's first release on, a rename needs `schema_version: 2`. Earlier names: [`HISTORY.md`](HISTORY.md) §5.
 
 ## 6. Build phases
 
@@ -574,7 +579,8 @@ Done 2026-09-30. Three changes, one new file.
   compatibility rules.
 * **`checker_version` became `snt_workspace_check_version`** (D18). It was hardcoded to `null` and
   still is: a run cannot read the name of the pipeline version executing it. The key is frozen and
-  nullable, so filling it later is not a breaking change.
+  nullable, so filling it later is not a breaking change. Renamed again on 2026-10-02, to
+  `snt_workspace_checker_version` (§5.5).
 * **`snt_workspace_checker/readme.md`** was checked against `pipeline.py`. Discrepancies found and
   fixed, so the record shows what the previous readme got wrong:
   * it said the run stops only when the target has no usable manifest; it also stops when the target
@@ -598,7 +604,7 @@ without the schema, or the reverse, fails. The saved sandbox report
 **Sandbox run, 2026-09-30.** The pipeline was pushed and run after the rename. Its report
 (`status_2026-09-30T08-33-01Z.json`, attribution mode, 164 `attributed` + 1 `untracked`) validates
 against the schema with no errors, and its top-level keys equal the schema's exactly, including
-`snt_workspace_check_version: null`.
+`snt_workspace_check_version: null` (the key's name until 2026-10-02).
 
 **Not verified.** No real *verification-mode* report has been
 validated, only one built by the stub. Older saved reports predate the current shape and do not

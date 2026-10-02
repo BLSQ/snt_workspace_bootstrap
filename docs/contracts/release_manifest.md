@@ -9,8 +9,10 @@
 
 [`.github/workflows/generate_manifest.yaml`](https://github.com/BLSQ/snt_development/blob/main/.github/workflows/generate_manifest.yaml) runs on
 `release: published` (and `workflow_dispatch` for manual testing). It hashes every file a release
-ships and attaches `release_manifest.json` to the release. The workflow is committed in *this* repo;
-the sandbox copy is applied by hand.
+ships and attaches `release_manifest.json` to the release. The workflow is committed in
+`snt_development`; the sandbox copy is applied by hand. This repository does not copy it: its own
+[`generate_manifest.yaml`](../../.github/workflows/generate_manifest.yaml) calls it as a reusable
+workflow (D27).
 
 The generator has two halves, because a release reaches a workspace by two routes:
 
