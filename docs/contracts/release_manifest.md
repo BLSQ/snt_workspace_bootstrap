@@ -53,6 +53,15 @@ Two consequences worth knowing:
   `not_covered` status ([`checker.md`](../checker.md) §5.1) is the tripwire for exactly that, which is why the
   spec keeps it after phase 0 rather than deleting it.
 
+A third, optional block, `repository_files`, holds `{path: sha256}` for files a pipeline **fetches
+from the repository at run time** instead of receiving them by deployment. In `snt_development`
+that is `metadata/SNT_metadata_master.json` (glob `metadata/*.json`), which `snt_metadata_json_trim`
+downloads at the requested release tag. These files must not go in `files`: any `files` path outside
+a pipeline directory is synced into the workspace filesystem by the deployer, and the point of the
+trim pipeline is to read the master list from the repo, not from the workspace. The block is for
+provenance only. Neither the deployer nor the checker reads it, and the schema does not require it,
+so older manifests still validate.
+
 Country-specific notebook variants appear in the manifest undistinguished from generic files. That
 is intended — telling them apart is the verification pipeline's job, not the generator's.
 

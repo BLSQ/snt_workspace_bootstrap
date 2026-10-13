@@ -24,6 +24,12 @@
       "description": "{repository directory: pipeline spec}, one entry per deployable OpenHEXA pipeline. The key is a single top-level directory, not a nested path: snt_workspace_deployer excludes a file from the filesystem sync by its first path segment alone. May be empty for a release that ships no pipeline, but must be present.",
       "propertyNames": { "$ref": "#/$defs/directory_name" },
       "additionalProperties": { "$ref": "#/$defs/pipeline" }
+    },
+    "repository_files": {
+      "type": "object",
+      "description": "Files a pipeline fetches from the source repository at run time, at the release tag, rather than receiving them by deployment: {repository path: sha256}. For snt_development this is metadata/SNT_metadata_master.json, read by snt_metadata_json_trim. Hashed for provenance only: these files are never synced into the workspace filesystem and ship in no pipeline zip, which is why they are kept out of files. snt_workspace_deployer and snt_workspace_checker ignore this block. Optional, so manifests produced before it was added still validate; may be empty.",
+      "propertyNames": { "$ref": "#/$defs/relative_path" },
+      "additionalProperties": { "$ref": "#/$defs/sha256" }
     }
   },
   "$defs": {
