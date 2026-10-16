@@ -55,8 +55,9 @@ Two consequences worth knowing:
 
 A third, optional block, `repository_files`, holds `{path: sha256}` for files a pipeline **fetches
 from the repository at run time** instead of receiving them by deployment. In `snt_development`
-that is `metadata/SNT_metadata_master.json` (glob `metadata/*.json`), which `snt_metadata_json_trim`
-downloads at the requested release tag. These files must not go in `files`: any `files` path outside
+that is `catalogs/SNT_metadata_master.json` (glob `catalogs/*.json`), which `snt_metadata_json_trim`
+downloads at the requested release tag. Releases cut before the folder was renamed record it as
+`metadata/SNT_metadata_master.json`. These files must not go in `files`: any `files` path outside
 a pipeline directory is synced into the workspace filesystem by the deployer, and the point of the
 trim pipeline is to read the master list from the repo, not from the workspace. The block is for
 provenance only. Neither the deployer nor the checker reads it, and the schema does not require it,
