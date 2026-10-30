@@ -57,12 +57,16 @@ change it in a PR of its own.
 
 ## What this repo is
 
-Two OpenHEXA pipelines that manage which **release** of the SNT codebase a country workspace runs:
+Three OpenHEXA pipelines that manage which **release** of the SNT codebase a country workspace runs:
 
 * **`snt_workspace_deployer`** — installs one GitHub release, whole: R analytics into the workspace
   filesystem, every `pipeline.py` registered through the OpenHEXA API, then writes `.snt_release`.
   The only component that changes a workspace. Built; the 2026-09-30 changes (whole-release only and
   version naming on re-deploy, D21/D22) are not yet tested in a workspace (`docs/deployer.md` §6.7).
+* **`snt_pipeline_deployer`** — the deployer for **one** named pipeline (D28), for a workspace that
+  already holds real work. Registers that pipeline and, optionally, its `pipelines/<name>/` R scripts;
+  never the shared `code/` library (it warns when `code/` differs), never `.snt_release`. A copy of the
+  deployer, kept identical by `tests/test_pipeline_deployer.py`. Built 2026-10-30, not yet run.
 * **`snt_workspace_checker`** — read-only. Hashes what is in a workspace and reports, per file, which
   releases it matches. Built and verified in the sandbox; its report is frozen at `schema_version: 1`.
 
@@ -85,11 +89,13 @@ Moved out of `snt_development` on 2026-10-01 (import `895b2b9`, from `d9acafc`),
 
 ```
 snt_workspace_deployer/   pipeline.py, readme.md, requirements.txt — deploys a release
+snt_pipeline_deployer/    pipeline.py, readme.md, requirements.txt — deploys one pipeline of a release
 snt_workspace_checker/    pipeline.py, readme.md, requirements.txt — checks a workspace
 docs/                     the specs; see "Read X when Y" below
 docs/contracts/           machine-readable contracts (JSON Schema) and their prose
 docs/context/             facts about other repos these tools depend on
-tests/                    offline tests: the checker stub, contract fixtures (tests/fixtures/)
+tests/                    offline tests: the checker stub, contract fixtures (tests/fixtures/),
+                          the single-pipeline deployer and its drift from the deployer
 tools/                    d9_notebook_drift.py — the D9 notebook-drift measurement (stdlib only)
 dev/environment.yml       the local conda env (ruff, pytest, jsonschema, openhexa.sdk). Never runs on OpenHEXA.
 pyproject.toml            ruff's rulebook. Never runs on OpenHEXA.
@@ -97,7 +103,7 @@ pyproject.toml            ruff's rulebook. Never runs on OpenHEXA.
 ignore/                   local only, gitignored: sandbox reports, scratch
 ```
 
-Neither pipeline has a deployment workflow, by decision (D19). You deploy them by hand with the
+None of the pipelines has a deployment workflow, by decision (D19). You deploy them by hand with the
 `openhexa` CLI, or the deployer deploys them like any other pipeline.
 
 ## Commands
@@ -147,7 +153,7 @@ Read only what the task needs. `docs/HISTORY.md` is **never** read by default.
 
 | Path | Holds | Read it when |
 |---|---|---|
-| [`docs/deployer.md`](docs/deployer.md) | Deployer spec, current state, phase-5 test plan, limits (strays, no deletes) | Working on the deployer |
+| [`docs/deployer.md`](docs/deployer.md) | Deployer spec, current state, phase-5 test plan, limits (strays, no deletes); the single-pipeline deployer | Working on either deployer |
 | [`docs/checker.md`](docs/checker.md) | Statuses, modes, attribution, report contract prose, build phases, open decisions | Working on the checker |
 | [`docs/contracts/release_manifest.schema.json`](docs/contracts/release_manifest.schema.json) + [`release_manifest.md`](docs/contracts/release_manifest.md) | Producer ↔ consumer contract; how it is generated; the `pipelines` block; the legacy fallback | Changing manifest reading or writing |
 | [`docs/contracts/status_report.schema.json`](docs/contracts/status_report.schema.json) | The checker's frozen report (`schema_version: 1`) — the authority over `checker.md` §5.5 | Changing or consuming the report |
@@ -156,7 +162,7 @@ Read only what the task needs. `docs/HISTORY.md` is **never** read by default.
 | [`docs/context/snt_development.md`](docs/context/snt_development.md) | The source repo's facts these tools depend on | Anything touching what a release contains |
 | [`docs/release_strategy.md`](docs/release_strategy.md) | Why, tag immutability, staging pre-releases from feature branches, the three operations, components, one workspace per release | Big-picture questions, or testing a PR |
 | [`docs/roadmap.md`](docs/roadmap.md) | The bootstrap: a list of sources instead of `github_repo`, this repo as a source, the starting problem, web apps and the OpenHEXA-dev questions | Planning ahead, or anything touching more than one source repo |
-| [`docs/decisions.md`](docs/decisions.md) | D1–D27, append-only | Before reopening any choice |
+| [`docs/decisions.md`](docs/decisions.md) | D1–D28, append-only | Before reopening any choice |
 | [`docs/sandbox.md`](docs/sandbox.md) | Sandbox repo and workspace, fixture releases, expected check results | Testing |
 | [`docs/HISTORY.md`](docs/HISTORY.md) | Dead ends, closed issues, superseded designs and layouts | Before re-investigating something that seems solved |
 | [`tests/`](tests/) | Offline stub and contract tests | Before committing a change to either pipeline or a schema: run them |
@@ -164,7 +170,8 @@ Read only what the task needs. `docs/HISTORY.md` is **never** read by default.
 **Typical tasks:**
 
 * **Deployer change:** `deployer.md`, then `openhexa_deployment.md`. Add the manifest contract if it
-  touches `split_manifest()` or `download_manifest()`.
+  touches `split_manifest()` or `download_manifest()`. Copy the change into `snt_pipeline_deployer/`
+  too; `pytest tests/` fails until the shared functions match again.
 * **Checker change:** `checker.md` and `contracts/status_report.schema.json`. Extend
   `tests/test_checker_stub.py` rather than starting a new test.
 * **Manifest change:** `contracts/release_manifest.schema.json` + `release_manifest.md`, then

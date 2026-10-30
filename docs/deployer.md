@@ -1,6 +1,7 @@
 # Workspace Deployer — spec and state
 
-> `snt_workspace_deployer`: what it does, its current state, the phase-5 test plan and its limits.
+> `snt_workspace_deployer`: what it does, its current state, the phase-5 test plan and its limits;
+> and its single-pipeline variant `snt_pipeline_deployer` (D28).
 > How a pipeline version is registered through the API is in
 > [`openhexa_deployment.md`](openhexa_deployment.md). Section numbers are those of the former
 > `PRODUCT_SPEC.md`.
@@ -75,6 +76,83 @@ published release, only pre-releases, or unknown tag.
 `deploy_new_version()` (seven cases). **They have not been run in a workspace.** The full test plan
 is §6.7. Still unverified from before: **`backup_existing`**, since every verified
 run so far was against an empty workspace. Past verification runs: [`HISTORY.md`](HISTORY.md) §4.2.
+
+## Single-pipeline deployer — built 2026-10-30, **not yet tested in a workspace**
+
+[`snt_pipeline_deployer/`](../snt_pipeline_deployer/) deploys **one** pipeline of a release (D28). It
+is meant for a workspace that already holds real work, such as a locally hosted OpenHEXA with a running
+analysis, where updating the whole release at once is too much change. It exists alongside the
+deployer and does not replace it: D21 still holds for `snt_workspace_deployer`.
+
+Parameters: `pipeline_name` plus the deployer's own, and `pull_r_scripts` (default on). `pipeline_name`
+is free text, either the directory name (`snt_dhis2_extract`) or the OpenHEXA code
+(`snt-dhis2-extract`), with case and padding ignored. It is checked against the manifest's `pipelines`
+block, and an unknown name stops the run with an `[ERROR]` listing the release's pipelines. A dropdown
+is not possible: OpenHEXA's `choices` is a static list in the code and would go stale with each release.
+
+What it does differently from the deployer:
+
+| Step | `snt_workspace_deployer` | `snt_pipeline_deployer` |
+|---|---|---|
+| Pipeline versions | Every pipeline of the release | The one named. Same D22 naming, same create-if-missing |
+| `pipelines/<name>/**` (notebooks, `utils/*.r`) | Every pipeline's | Only this pipeline's, and only with `pull_r_scripts` on |
+| `code/**` (R scripts shared by all pipelines) | Copied | **Never copied.** Compared with the release, and each file that differs is named in a `[WARNING]` |
+| `.snt_release` | Written | **Not written**: the workspace is not at the release |
+| Version description | `Deployed by snt_workspace_deployer …` | `Deployed by snt_pipeline_deployer …` |
+
+**The R scripts in `code/`: the risk you accept with a single-pipeline deploy.** Every pipeline's
+notebooks `source()` the R files in `code/`, so those files belong to all pipelines at once. Updating
+them for one pipeline would change the code that every other pipeline runs, which is what this tool
+exists to avoid. So `code/` stays at whatever version the workspace already has, and the pipeline just
+deployed runs its release-`X` notebooks against `code/` scripts from some other release. When the
+two are compatible this works. When release `X` changed a function in `code/` that its notebooks rely
+on (a renamed function, a new argument, a changed return shape), the pipeline fails at run time, or
+worse, runs and produces different results. Nothing in OpenHEXA reports this. The deployer's run
+therefore compares every `code/` file with the release's sha256 and logs one `[WARNING]` naming each
+file that differs or is missing. That message tells you there is a difference, not whether it breaks
+anything: check the diff of the files it names between the two releases on GitHub. The way out is to
+deploy the whole release with `snt_workspace_deployer`.
+
+With `pull_r_scripts` off, the same reasoning extends to the pipeline's own notebooks: the new
+`pipeline.py` runs whatever notebooks are already in `pipelines/<name>/`.
+
+**Other limits:**
+
+* Pairing `<name>/pipeline.py` with `pipelines/<name>/` is an `snt_development` convention, not part of
+  the manifest contract. It holds for all 21 pipelines as of 2026-10-30; `snt_metadata_json_trim` has no
+  `pipelines/` folder and so no R scripts of its own.
+* An existing `.snt_release` is left as it is, so it still names the last *whole*-release deploy. The
+  checker reports a workspace deployed this way as a mix of releases; give it the tag you deployed as
+  `release_tag` to check that one pipeline against it. That mixed reading is correct.
+* **Drift from the deployer.** The file is a copy. `tests/test_pipeline_deployer.py` fails when a
+  function the two share differs, except `build_version_input` (description text) and `get_release`
+  (its pre-release warning cannot point at a `.snt_release`, and the latest tag is quoted). `deploy_all`
+  is not copied: for one pipeline, `deploy_one` is called directly and the run ends on
+  `Pipeline <name> successfully deployed!` (also after an "already up to date, skipped"), not
+  `Pipelines: 1/1 deployed.`. A change to the deployer is copied here in the same change.
+
+**Run-time messages specific to it:** the sync line says where replaced files went, e.g.
+`R scripts of <name>: 4/4 file(s) synced; the 4 previous copies moved to archive/<tag>/pipelines/<name>/`,
+or `…; 4 existing file(s) overwritten, no backup (Backup existing files is off)`. The `code/` check reads
+`R scripts in code/ (shared by all pipelines, not updated by this run): all N file(s) match release <tag>.`,
+or the same prefix in a `[WARNING]` listing the files that differ.
+
+**Verified:** `ruff check` clean; `get_pipeline` yields `pipeline_name, github_repo, release_tag,
+api_connection, pull_r_scripts, backup_existing, dry_run`; offline tests of name resolution,
+`pipelines/<name>/` selection, the sync message and the `code/` drift warning, plus the drift test
+against the deployer. Run on a local OpenHEXA instance on 2026-10-30 and reported working; which test
+plan steps that covered is not recorded. The message changes made after that run are not yet run.
+
+**Test plan** (run by a human, on the local instance):
+
+1. `dry_run` on, a pipeline that exists. Logs: the R scripts it would sync (only `pipelines/<name>/`),
+   "would register/relabel", the `code/` comparison, "No .snt_release marker written". Nothing changes.
+2. A misspelled `pipeline_name`. `[ERROR] Cannot deploy: release … has no pipeline …`, listing them.
+3. The same pipeline for real. One new version; `archive/<tag>/pipelines/<name>/…` holds the replaced
+   files, and the sync line names that folder; other pipelines and `code/` untouched. Ends on
+   `Pipeline <name> successfully deployed!`.
+4. Same again. "already up to date, skipped".
+5. `pull_r_scripts` off on another pipeline. A version is registered, no file is written.
 
 ## 6.7 Phase 5, step 1 — the deployer on its own (written 2026-09-30, **not yet tested**)
 
